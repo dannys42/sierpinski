@@ -1,11 +1,13 @@
 import java.applet.Applet;
+import java.awt.event.*;
 import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Random;
+import javax.swing.*;
 
 
-public class Sierpinski extends Applet
+public class Sierpinski extends JPanel
 {
     Timer iterateTimer;
     Timer redrawTimer;
@@ -14,6 +16,7 @@ public class Sierpinski extends Applet
     Point[] vertices;
     Random random;
     int canvasWidth, canvasHeight;
+    boolean isInitialized = false;
 
     /* Some constants for tweaking */
     int iteratePeriod = 10;     /* [ms] Time between iterations */
@@ -22,9 +25,40 @@ public class Sierpinski extends Applet
     int vertexRadius = 5;       /* [px] Size of radius */
     int vertexMargin = 25;      /* [px] how far to push vertices in from edge */
 
+    private class componentAdapter extends java.awt.event.ComponentAdapter {
+        Sierpinski parent;
+        public componentAdapter(Sierpinski parent)
+        {
+            this.parent = parent;
+        }
+
+        public void componentResized(ComponentEvent e) {
+            if( isInitialized ) {
+                stop();
+            }
+            init();
+            start();
+            isInitialized = true;
+        }
+    }
+    public Sierpinski()
+    {
+        setPreferredSize(new Dimension(100, 100));
+
+        addComponentListener(new componentAdapter(this));
+    }
+    public Dimension getMinimumSize()
+    {
+        return(new Dimension(10, 10));
+    }
+    public Dimension getPreferredSize()
+    {
+        return(new Dimension(640, 480));
+    }
     public void init()
     {
         random = new Random();
+
         /* Dimensions are not valid at this point */
         drawPoints = new Point[100000];
         drawPoints_num = 0;
@@ -51,6 +85,8 @@ public class Sierpinski extends Applet
     }
     public void stop()
     {
+        iterateTimer.cancel();
+        redrawTimer.cancel();
     }
     private class RedrawThread extends TimerTask {
         public void run() {
@@ -59,11 +95,6 @@ public class Sierpinski extends Applet
     }
     /* This class updates the list of points that are drawn onscreen */
     private class IterateThread extends TimerTask {
-        public IterateThread()
-        {
-            System.out.format("Constructor called\n");
-        }
-
         private boolean iteration()
         {
             Point vertex_new;
@@ -102,16 +133,12 @@ public class Sierpinski extends Applet
         }
     }
 
-    public void paint(Graphics g)
+    protected void paintComponent(Graphics g)
     {
         int i;
-        g.setColor(Color.red);
-        g.drawString("Hellow World", 20, 20);
-        g.setColor(Color.blue);
-        g.drawRect(0, 0, getSize().width, getSize().height);
-        g.setColor(Color.green);
-        g.drawRect(5, 5, 10, 10);
+        super.paintComponent(g);
 
+        g.create();
         /* draw all points */
         g.setColor(Color.blue);
         for(i=0; i<drawPoints_num; i++) {
@@ -128,22 +155,8 @@ public class Sierpinski extends Applet
                     vertexRadius);
             }
         }
+        g.dispose();
     }
 
-    /**
-      Allow this Applet to run as an application as well.
-      @param args command line arguments
-    */
-    static int appletWidth = 640;
-    static int appletHeight = 480;
-    public static void main(String args[])
-    {
-        Hybrid.fireup(
-            new Sierpinski(), /* not being run as Applet */
-            "Hello World",       /* title for frame */
-            appletWidth,
-            appletHeight + 26 /* allow room for Frame bar */
-            );
-    }
 }
 
