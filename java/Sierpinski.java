@@ -20,21 +20,28 @@ public class Sierpinski extends Applet
     int iterateBatch = 100;     /* [ms] Points to calculate per iteration */
     int drawPeriod = 100;       /* [ms] How often to redraw window */
     int vertexRadius = 5;       /* [px] Size of radius */
+    int vertexMargin = 25;      /* [px] how far to push vertices in from edge */
 
     public void init()
     {
         random = new Random();
         /* Dimensions are not valid at this point */
-        drawPoints = new Point[10000];
+        drawPoints = new Point[100000];
         drawPoints_num = 0;
     }
     public void start()
     {
         /* initial triangle */
         vertices = new Point[3];
-        vertices[0] = new Point( getSize().width / 2, 0 );
-        vertices[1] = new Point( 0, getSize().height );
-        vertices[2] = new Point( getSize().width, getSize().height );
+        vertices[0] = new Point(
+            getSize().width / 2,
+            vertexMargin);
+        vertices[1] = new Point(
+            vertexMargin,
+            getSize().height - vertexMargin );
+        vertices[2] = new Point(
+            getSize().width - vertexMargin,
+            getSize().height - vertexMargin );
 
         iterateTimer = new Timer(true);
         iterateTimer.schedule(new IterateThread(), 0, 10);
@@ -57,30 +64,38 @@ public class Sierpinski extends Applet
             System.out.format("Constructor called\n");
         }
 
-        public void run() {
+        private boolean iteration()
+        {
             Point vertex_new;
             Point point_new;
             Point point_current;
+
+            vertex_new = vertices[ random.nextInt( vertices.length ) ];
+
+            if( drawPoints_num <= 0 ) {
+                point_current = vertex_new;
+            } else {
+                point_current = drawPoints[ drawPoints_num-1 ];
+            }
+            point_new = new Point(
+                (vertex_new.x + point_current.x) / 2,
+                (vertex_new.y + point_current.y) / 2 );
+
+            drawPoints[drawPoints_num] = point_new;
+
+            drawPoints_num++;
+            if( drawPoints_num >= drawPoints.length ) {
+                iterateTimer.cancel();
+                return false;
+            }
+            return true;
+        }
+
+        public void run() {
             int batch;
 
             for(batch=0; batch < iterateBatch; batch++) {
-                vertex_new = vertices[ random.nextInt( vertices.length ) ];
-    
-                if( drawPoints_num <= 0 ) {
-                    point_current = vertex_new;
-                } else {
-                    point_current = drawPoints[ drawPoints_num-1 ];
-                }
-                point_new = new Point(
-                    (vertex_new.x - point_current.x) / 2,
-                    (vertex_new.y - point_current.y) / 2 );
-    
-                drawPoints[drawPoints_num] = point_new;
-                point_current = point_new;
-
-                drawPoints_num++;
-                if( drawPoints_num >= drawPoints.length ) {
-                    iterateTimer.cancel();
+                if( !iteration() ) {
                     break;
                 }
             }
@@ -103,7 +118,7 @@ public class Sierpinski extends Applet
             g.fillRect(drawPoints[i].x, drawPoints[i].y, 1, 1);
         }
         /* draw vertices */
-        g.setColor(Color.green);
+        g.setColor(Color.red);
         if( vertices != null ) {
             for(i=0; i<vertices.length; i++) {
                 g.fillOval( 
