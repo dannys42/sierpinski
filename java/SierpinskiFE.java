@@ -4,7 +4,7 @@ import javax.swing.*;
 
 
 
-public class SierpinskiGUI extends JApplet
+public class SierpinskiFE extends JApplet
 {
     public void init()
     {
@@ -40,7 +40,7 @@ public class SierpinskiGUI extends JApplet
     public static void main(String args[])
     {
         Hybrid.fireup(
-            new SierpinskiGUI(), /* not being run as Applet */
+            new SierpinskiFE(), /* not being run as Applet */
             "Hello World",       /* title for frame */
             appletWidth,
             appletHeight + 26 /* allow room for Frame bar */
