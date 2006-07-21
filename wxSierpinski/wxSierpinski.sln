@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual C++ Express 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wxSierpinski", "wxSierpinski.vcproj", "{012630B9-5BB6-4D1B-A4E1-31A822737AEE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{45996605-B8EA-4FCB-8D63-1F250BA335BB} = {45996605-B8EA-4FCB-8D63-1F250BA335BB}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsierp", "..\libsierp\libsierp.vcproj", "{45996605-B8EA-4FCB-8D63-1F250BA335BB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{012630B9-5BB6-4D1B-A4E1-31A822737AEE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{012630B9-5BB6-4D1B-A4E1-31A822737AEE}.Debug|Win32.Build.0 = Debug|Win32
+		{012630B9-5BB6-4D1B-A4E1-31A822737AEE}.Release|Win32.ActiveCfg = Release|Win32
+		{012630B9-5BB6-4D1B-A4E1-31A822737AEE}.Release|Win32.Build.0 = Release|Win32
+		{45996605-B8EA-4FCB-8D63-1F250BA335BB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{45996605-B8EA-4FCB-8D63-1F250BA335BB}.Debug|Win32.Build.0 = Debug|Win32
+		{45996605-B8EA-4FCB-8D63-1F250BA335BB}.Release|Win32.ActiveCfg = Release|Win32
+		{45996605-B8EA-4FCB-8D63-1F250BA335BB}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
