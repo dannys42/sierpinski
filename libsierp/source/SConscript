@@ -1,0 +1,21 @@
+LIBRARY_NAME = 'sierp'
+LIBRARY_SOURCES = [
+    'sierp.c',
+    'sierp_point_list.c',
+]
+
+INCLUDE_DIRS = [
+    '#/libsierp/include'
+]
+
+
+# You shouldn't need to modify below this line
+
+Import('amenv')
+menv = amenv.Copy()
+menv.Append( CPPPATH=INCLUDE_DIRS )
+
+libfile = menv.Library(target=LIBRARY_NAME, source=LIBRARY_SOURCES)
+libfile = str(libfile)
+
+menv.Install(libfile)
