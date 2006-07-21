@@ -16,5 +16,4 @@ public:
     void onPaint(wxPaintEvent &event);
 };
 
-
 #endif /* CONTROL_PANEL_H */
