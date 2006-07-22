@@ -56,6 +56,9 @@ void sierp_point_list_size_set(SIERP_POINT_LIST *point_list, int newsize)
 {
     point_list->head = 0;
     point_list->tail = 0;
+    if( point_list->point != NULL ) {
+        free(point_list->point);
+    }
     point_list->point = (SIERP_POINT *)calloc(newsize+1, sizeof(SIERP_POINT));
     point_list->maxlen = newsize+1;
 }

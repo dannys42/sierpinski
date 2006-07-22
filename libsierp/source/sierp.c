@@ -13,6 +13,7 @@
 #include "sierp/sierp_point_list.h"
 
 #define SIERP_DEFAULT_VERTICES      3
+#define SIERP_DEFAULT_DIVISOR       2
 #define SIERP_DEFAULT_RADIUS        100
 #define SIERP_DEFAULT_POINT_SIZE    1000
 
@@ -20,6 +21,7 @@ struct SIERP {
     SIERP_POINT_LIST *vertex;
     SIERP_POINT_LIST *points;
     SIERP_POINT point_last;
+    double divisor;
     int flags;
     int radius;
     int iter_per_update;
@@ -40,6 +42,7 @@ SIERP *sierp_new(void)
     sierp->radius = 100;
     sierp->iter_per_update = 100;
     sierp->flags = 0;
+    sierp->divisor = SIERP_DEFAULT_DIVISOR;
     sierp_flag_set(sierp, SIERP_FLAG_ALIGN_BOTTOM);
 
     /* Default vertex type */
@@ -117,10 +120,10 @@ int sierp_update(SIERP *sierp, int steps)
         vertex = sierp_vertex_get(sierp, vertex_idx);
 
         point.x = sierp->point_last.x + vertex->x;
-        point.x /= 2;
+        point.x /= sierp->divisor;
 
         point.y = sierp->point_last.y + vertex->y;
-        point.y /= 2;
+        point.y /= sierp->divisor;
 
         sierp_point_list_push_point(sierp->points, &point);
         sierp->point_last = point;
@@ -142,6 +145,19 @@ int sierp_points_size_set(SIERP *sierp, int size)
 int sierp_vertex_num(SIERP *sierp)
 {
     return sierp_point_list_size_get(sierp->vertex);
+}
+
+double sierp_divisor_set(SIERP *sierp, double divisor)
+{
+    if( divisor == 0 )
+        return sierp->divisor;
+    sierp->divisor = divisor;
+    return(sierp->divisor);
+}
+
+double sierp_divisor_get(SIERP *sierp)
+{
+    return(sierp->divisor);
 }
 
 const SIERP_POINT *sierp_vertex_get(SIERP *sierp, int index)

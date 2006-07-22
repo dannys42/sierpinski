@@ -25,6 +25,8 @@ int sierp_flag_isset(SIERP *sierp, int flags);
 int sierp_update(SIERP *sierp, int steps);
 const struct SIERP_POINT_LIST *sierp_points(SIERP *sierp);
 int sierp_points_size_set(SIERP *sierp, int size);
+double sierp_divisor_set(SIERP *sierp, double divisor);
+double sierp_divisor_get(SIERP *sierp);
 
 #ifdef __cplusplus
 }
