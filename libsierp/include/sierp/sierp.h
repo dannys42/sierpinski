@@ -7,6 +7,8 @@ extern "C" {
 
 #include "sierp/sierp_point.h"
 
+#define SIERP_FLAG_ALIGN_BOTTOM   (1<<0)
+
 struct SIERP;
 typedef struct SIERP SIERP;
 
@@ -16,6 +18,9 @@ SIERP *sierp_new(void);
 const SIERP_POINT *sierp_vertex_get(SIERP *sierp, int index);
 int sierp_vertex_num(SIERP *sierp);
 int sierp_radius_get(SIERP *sierp);
+int sierp_flag_set(SIERP *sierp, int flags);
+int sierp_flag_clear(SIERP *sierp, int flags);
+int sierp_flag_isset(SIERP *sierp, int flags);
 
 #ifdef __cplusplus
 }

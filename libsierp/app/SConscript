@@ -1,0 +1,28 @@
+COMMON_SOURCES = [ ]
+TARGETS = {
+    'sierp' : [ 'sierp.c' ]
+}
+INCLUDE_DIRS = [
+    '#/libsierp/include',
+]
+LIBS = [
+    'sierp',
+    'm',
+]
+LIB_DIRS = [
+    '../source'
+]
+
+# You shouldn't need to modify below this line.
+
+Import('amenv')
+menv = amenv.Copy()
+
+menv.Append(CPPPATH=INCLUDE_DIRS)
+menv.Append(LIBS=LIBS, LIBPATH=LIB_DIRS)
+
+for target in TARGETS.keys():
+    sources = TARGETS[target]
+    menv.Program(target, sources)
+    menv.Install(target)
+
