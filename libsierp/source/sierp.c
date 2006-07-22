@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <math.h>
 
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
+
 #include "sierp/sierp.h"
 #include "sierp/sierp_point_list.h"
 
@@ -13,20 +17,20 @@ struct SIERP {
     int iter_per_update;
 };
 
-SIERP *sierp_new(int num_vertices)
+SIERP *sierp_new(void)
 {
     SIERP *sierp;
-    if( num_vertices <= 1 ) {
-        return(NULL);
-    }
     sierp = (SIERP *)malloc(sizeof(SIERP));
+    if( sierp == NULL )
+        return NULL;
 
     /* Initialize values */
     sierp->vertex = NULL;
     sierp->radius = 100;
     sierp->iter_per_update = 100;
 
-    sierp_vertex_set(sierp, num_vertices, 100);
+    /* Default vertex type */
+    sierp_vertex_set(sierp, 3, 100);
 
     return sierp;
 }
@@ -49,6 +53,9 @@ SIERP *sierp_vertex_set(SIERP *sierp, int num_vertices, int radius)
     int i;
     SIERP_POINT p;
 
+    if( sierp->vertex != NULL ) {
+        sierp_point_list_delete(sierp->vertex);
+    }
     sierp->vertex = sierp_point_list_new();
     sierp_point_list_size_set(sierp->vertex, num_vertices);
     for(i=0; i<num_vertices; i++) {

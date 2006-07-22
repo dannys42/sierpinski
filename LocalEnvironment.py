@@ -54,7 +54,7 @@ def AppEnvironmentArch(menv=None, common=None, arch=None):
     desktop_profile = desktop.Copy()
     desktop_profile.Append(
         CCFLAGS = [ '-g', '-pg' ],
-        LIINKFLAGS = [ '-pg' ]
+        LINKFLAGS = [ '-pg' ]
         )
     desktop_profile_static = MakeStatic( desktop_profile.Copy() )
     desktop_profile_shared = MakeShared( desktop_profile.Copy() )

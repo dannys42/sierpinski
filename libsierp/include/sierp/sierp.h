@@ -12,7 +12,7 @@ typedef struct SIERP SIERP;
 
 SIERP *sierp_vertex_set(SIERP *sierp, int num_vertices, int radius);
 SIERP *sierp_delete(SIERP *sierp);
-SIERP *sierp_new(int num_vertices);
+SIERP *sierp_new(void);
 const SIERP_POINT *sierp_vertex_get(SIERP *sierp, int index);
 int sierp_vertex_num(SIERP *sierp);
 int sierp_radius_get(SIERP *sierp);

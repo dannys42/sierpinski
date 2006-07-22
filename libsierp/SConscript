@@ -1,3 +1,4 @@
 Import('amenv')
 
 SConscript('source/SConscript')
+SConscript('unittest/SConscript')

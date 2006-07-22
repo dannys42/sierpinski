@@ -1,6 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef DMALLOC
+#include <dmalloc.h>
+#endif
+
 #include "sierp/sierp_point_list.h"
 #include "sierp_point_list_prv.h"
 
