@@ -6,8 +6,8 @@ extern "C" {
 #endif
 
 struct SIERP_POINT {
-    int x;
-    int y;
+    double x;
+    double y;
     int iter;
 };
 typedef struct SIERP_POINT SIERP_POINT;

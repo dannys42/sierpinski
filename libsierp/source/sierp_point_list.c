@@ -71,7 +71,7 @@ int sierp_point_list_size_get(const SIERP_POINT_LIST *point_list)
     return length;
 }
 
-int sierp_point_list_push_int(SIERP_POINT_LIST *point_list, int x, int y)
+int sierp_point_list_push_int(SIERP_POINT_LIST *point_list, double x, double y)
 {
     SIERP_POINT p;
     p.x = x;

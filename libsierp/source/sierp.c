@@ -89,8 +89,8 @@ SIERP *sierp_vertex_set(SIERP *sierp, int num_vertices, int radius)
         double radian;
         radian = 2*M_PI * (double)i / num_vertices;
         radian += rotate;
-        p.x = (int) (radius * cos(radian));
-        p.y = (int) (radius * sin(radian));
+        p.x = radius * cos(radian);
+        p.y = radius * sin(radian);
         p.iter = 0;
         sierp_point_list_push_point(sierp->vertex, &p);
     }

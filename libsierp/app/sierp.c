@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     for(i=0; i<n; i++) {
         const SIERP_POINT *p;
         p = sierp_vertex_get(sierp, i);
-        printf("%d %d\n", p->x, p->y);
+        printf("%f %f\n", p->x, p->y);
     }
 
     sierp_points_size_set(sierp, iter);
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
             fprintf(stderr, "Error: ran out of values (%d)\n", i);
             break;
         }
-        printf("%d %d\n", p->x, p->y);
+        printf("%f %f\n", p->x, p->y);
     }
 
     sierp_delete(sierp);
