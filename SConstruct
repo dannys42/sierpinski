@@ -11,4 +11,3 @@ APP_DIRS = [
 amenv.BuildDir('#/build/<ENVIRONMENT>/<DIR>', APP_DIRS, duplicate=0)
 
 Default('targets')
-

@@ -1,9 +1,11 @@
 import commands
+import os
 import SCons.Environment
 import SCons.MultiEnv
 
 default_path = '/usr/local/bin:/bin:/usr/bin'
 global_CCFLAGS = [ '' ];
+arch = os.uname()[4]
 
 def MakeShared(env):
     env['LIBRARY_TYPE'] = 'shared'
@@ -28,6 +30,13 @@ def AppEnvironment(menv = None):
     common['LINKFLAGS'] = [ ]
     common['LIBPATH'] = [ ]
 
+    common32 = common.Copy()
+    if arch == 'x86_64':
+        common32.Replace(
+            CC='gcc32',
+            LINK='g++32',
+        )
+
     # Common Desktop definitions
     desktop = common.Copy()
     desktop.Append( CPPPATH=['/usr/include/libxml2'] )
@@ -44,8 +53,10 @@ def AppEnvironment(menv = None):
 
     # Desktop DMALLOC (32-bit)
     desktop_dmalloc = desktop.Copy()
-    desktop_dmalloc['CC'] = 'gcc32'
-    desktop_dmalloc['LINK'] = 'g++32'
+    desktop_dmalloc.Replace(
+        CC = 'gcc32',
+        LINK = 'g++32',
+        )
     desktop_dmalloc.Append(
         CCFLAGS = [ '-g', '-DDMALLOC', '-DDMALLOC_FUNC_CHECK', '-m32', '-march=i386'],
         LIBS = ['dmalloc'],

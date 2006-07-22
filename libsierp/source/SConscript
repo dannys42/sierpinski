@@ -15,7 +15,5 @@ Import('amenv')
 menv = amenv.Copy()
 menv.Append( CPPPATH=INCLUDE_DIRS )
 
-libfile = menv.Library(target=LIBRARY_NAME, source=LIBRARY_SOURCES)
-libfile = str(libfile)
-
+libfile = menv.Library(LIBRARY_NAME, LIBRARY_SOURCES)
 menv.Install(libfile)
