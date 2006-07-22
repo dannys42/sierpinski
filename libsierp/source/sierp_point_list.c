@@ -36,14 +36,14 @@ SIERP_POINT_LIST *sierp_point_list_delete(SIERP_POINT_LIST *point_list)
     return NULL;
 }
 
-int sierp_point_list_is_empty(SIERP_POINT_LIST *point_list)
+int sierp_point_list_is_empty(const SIERP_POINT_LIST *point_list)
 {
     if( point_list->head == point_list->tail )
         return 1;
     return 0;
 }
 
-int sierp_point_list_is_full(SIERP_POINT_LIST *point_list)
+int sierp_point_list_is_full(const SIERP_POINT_LIST *point_list)
 {
     if( point_list->tail+1 == point_list->head )
         return 1;
@@ -60,7 +60,7 @@ void sierp_point_list_size_set(SIERP_POINT_LIST *point_list, int newsize)
     point_list->maxlen = newsize+1;
 }
 
-int sierp_point_list_size_get(SIERP_POINT_LIST *point_list)
+int sierp_point_list_size_get(const SIERP_POINT_LIST *point_list)
 {
     int length;
 
@@ -105,7 +105,7 @@ const SIERP_POINT *sierp_point_list_pop(SIERP_POINT_LIST *point_list)
     return p;
 }
 
-const SIERP_POINT *sierp_point_get_index(SIERP_POINT_LIST *point_list, int index)
+const SIERP_POINT *sierp_point_list_get_index(const SIERP_POINT_LIST *point_list, int index)
 {
     int idx;
     if( index > sierp_point_list_size_get(point_list) )
