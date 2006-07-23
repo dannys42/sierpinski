@@ -57,6 +57,7 @@ void *SDLThread::Entry(void)
             update_scene();
             scene_last_time = timeNow;
         }
+        wxMilliSleep(100);
     }
 
     return NULL;
