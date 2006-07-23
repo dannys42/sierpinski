@@ -30,6 +30,16 @@ def AppEnvironmentArch(menv=None, common=None, arch=None):
     menv.AddEnvironment('desktop-'+arch+'-optimized-static', desktop_optimized_static)
     menv.AddEnvironment('desktop-'+arch+'-optimized-shared', desktop_optimized_shared)
 
+    # Debug build
+    desktop_debug = desktop.Copy()
+    desktop_debug.Append(CCFLAGS='-g')
+
+    desktop_debug_static = MakeStatic( desktop_debug.Copy() )
+    desktop_debug_shared = MakeShared( desktop_debug.Copy() )
+
+    menv.AddEnvironment('desktop-'+arch+'-debug-static', desktop_debug_static)
+    menv.AddEnvironment('desktop-'+arch+'-debug-shared', desktop_debug_shared)
+
     # Desktop DMALLOC
     # At least on Fedora Core 5, this is not available for 64-bit
     if arch != 'x86_64':
