@@ -3,6 +3,10 @@
 
 #include "sdlthread.h"
 
+#ifndef min
+#define min(a,b)   ((a)<(b)?(a):(b))
+#endif
+
 SDLThread::SDLThread(wxPanel *panel, SDL_Surface *screen) : wxThread()
 {
     screen_last_time = 0;
@@ -15,7 +19,11 @@ SDLThread::SDLThread(wxPanel *panel, SDL_Surface *screen) : wxThread()
     this->screen = screen;
 
     this->sierp = sierp_new();
-    sierp_vertex_set(sierp, 5, 200);
+
+    panel->GetSize(&this->width, &this->height);
+printf("panel dimensions: %d x %d\n", this->width, this->height);
+    this->radius = min(width, height) / 2;
+    sierp_vertex_set(sierp, 3, this->radius);
 }
 
 SDLThread::~SDLThread()
@@ -41,6 +49,21 @@ void SDLThread::draw_pixel(int x, int y, wxUint32 color)
     pixels[1] = (color >> 8) & 0xFF;
     pixels[2] = color & 0xFF;
 #endif
+}
+
+void SDLThread::draw_point(const SIERP_POINT *point, wxUint32 color)
+{
+    double x, y;
+    x = point->x;
+    y = point->y;
+
+    y = -y;   // flip vertically
+
+    // now center it
+    x += this->width/2;
+    y += this->height/2;
+
+    draw_pixel((int)x, (int)y, color);
 }
 
 void *SDLThread::Entry(void)
@@ -72,6 +95,7 @@ void SDLThread::update_scene(void)
 {
     int i;
     int num;
+    const SIERP_POINT_LIST *points;
 
     if( !screen )
         return;
@@ -84,23 +108,22 @@ void SDLThread::update_scene(void)
     }
 
     // Ask SDL for the time in milliseconds
-    int tick = timeNow;
-    /*
-    for (int y = 0; y < 480; y++) {
-        for (int x = 0; x < 640; x++) {
-            wxUint32 color = (y*y) + (x*x) + tick + x*tick/(y+1);
-            draw_pixel(x,  y, color);
-        }
-    }*/
+    sierp_update(sierp, 100);
+    points = sierp_points(sierp);
+    num = sierp_point_list_size_get(points);
+    for(i=0; i<num; i++) {
+        const SIERP_POINT *p;
+        p = sierp_point_list_get_index(points, i);
+        draw_point(p, 0xcccccc);
+    }
     
+    
+    /* Draw Vertices */
     num = sierp_vertex_num(sierp);
     for(i=0; i<num; i++) {
-        int x, y;
         const SIERP_POINT *p;
         p = sierp_vertex_get(sierp, i);
-        x = (int)(p->x + 200);
-        y = (int)(p->y + 200);
-        draw_pixel(x, y, 0xffffff ^ tick);
+        draw_point(p, 0x7f7fff);
     }
     // Unlock if needed
     if (SDL_MUSTLOCK(screen)) {

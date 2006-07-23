@@ -17,6 +17,9 @@ private:
     wxPanel *panel;
     int timeNow;
     SIERP *sierp;
+    int radius;
+    int width;
+    int height;
 
     int screen_period;     // [msec] time to wait before screen updates
     int screen_last_time;     // [msec] last time screen was drawn
@@ -27,6 +30,7 @@ private:
 
     void *Entry();  // thread entry-point
     void draw_pixel(int x, int y, wxUint32 color);
+    void draw_point(const SIERP_POINT *point, wxUint32 color);
     void update_screen();   // handle drawing of screen
     void update_scene();    // handle update/calculation of scene
 };
