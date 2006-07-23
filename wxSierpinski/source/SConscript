@@ -8,8 +8,10 @@ TARGETS = {
     'wxSierpinski' : [
         'control_panel.cpp',
         'frontend.cpp',
+        'glpanel.cpp',
         'mainframe.cpp',
         'sdlpanel.cpp',
+        'scenethread.cpp',
         'sdlthread.cpp',
     ]
 }
@@ -19,6 +21,8 @@ INCLUDE_DIRS = [
 LIBS = [
     'sierp',
     'm',
+    'GL',
+    'GLU',
 ]
 LIB_DIRS = [
     '../source',
@@ -31,8 +35,8 @@ Import('amenv')
 menv = amenv.Copy()
 
 #### Section for wxWidgets
-#menv.Append(CCFLAGS=['-DwxSIZE_T_IS_UINT'])
-menv.ParseConfig('wx-config --cflags --libs')
+menv.Append(CCFLAGS=['-DwxUSE_GLCANVAS=1'])
+menv.ParseConfig('wx-config --cflags --libs --gl-libs')
 #### 
 
 menv.Append(CPPPATH=INCLUDE_DIRS)

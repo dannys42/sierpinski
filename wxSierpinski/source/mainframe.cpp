@@ -4,6 +4,7 @@
 IMPLEMENT_CLASS(MainFrame, wxFrame)
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
+    EVT_SIZE(MainFrame::OnSize)
     EVT_MENU(IDM_FILE_EXIT, MainFrame::onFileExit)
     EVT_MENU(IDM_HELP_ABOUT, MainFrame::onHelpAbout)
 END_EVENT_TABLE()
@@ -12,7 +13,7 @@ MainFrame::MainFrame(void)
 {
     Create(NULL, ID_FRAME, wxT("Frame Title"), wxDefaultPosition,
         wxDefaultSize, 
-        wxCAPTION | wxSYSTEM_MENU | wxMINIMIZE_BOX | wxCLOSE_BOX);
+        wxDEFAULT_FRAME_STYLE);
 
     wxMenuBar *mb = new wxMenuBar;
 
@@ -38,15 +39,16 @@ MainFrame::MainFrame(void)
     statusbar->SetStatusText(_T("Field 3"), 2);
 
     // Create the SDL panel
-    sdlpanel = new SDLPanel(this);
+    /*sdlpanel = new SDLPanel(this);*/
+    glpanel = new GLPanel(this);
     
     // Create the control panel
     controlpanel = new ControlPanel(this);
 
     // Create the Layout handler, and assign the panes
     wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
-    sizer->Add(sdlpanel, 0, wxGROW);
-    sizer->Add(controlpanel, 0, wxGROW);
+    sizer->Add(glpanel, 1, wxEXPAND);
+    sizer->Add(controlpanel, 0, wxEXPAND | wxLEFT, 5);
     SetSizer(sizer);
     sizer->Fit(this);
     sizer->SetSizeHints(this);
@@ -65,9 +67,22 @@ void MainFrame::onHelpAbout(wxCommandEvent &)
         wxOK | wxICON_INFORMATION);
 }
 
+void MainFrame::OnSize(wxSizeEvent &event)
+{
+    int w, h;
+    wxSizer *sizer;
+    sizer = GetSizer();
+    if( sizer != NULL ) {
+        GetSize(&w, &h);
+        sizer->SetDimension(0, 0, w, h);
+        sizer->RecalcSizes();
+    }
+    event.Skip();   // keep processing event
+}
+
 void MainFrame::sendIdleEvent(void)
 {
     wxIdleEvent event;
-    event.SetEventObject(sdlpanel);
-    sdlpanel->AddPendingEvent(event);
+    event.SetEventObject(glpanel);
+    glpanel->AddPendingEvent(event);
 }

@@ -24,7 +24,7 @@ bool MainApp::OnInit(void)
 int MainApp::OnRun(void)
 {
     // initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_TIMER) < 0) {
         std::cerr << "unable to init SDL: " << SDL_GetError() << '\n';
         
         return -1;
