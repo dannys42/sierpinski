@@ -1,6 +1,6 @@
 #include "control_panel.h"
 
-IMPLEMENT_CLASS(ControlPanel, wxPanel);
+IMPLEMENT_CLASS(ControlPanel, wxPanel)
 BEGIN_EVENT_TABLE(ControlPanel, wxPanel)
     EVT_PAINT(ControlPanel::onPaint)
     //EVT_ERASE_BACKGROUND(SDLPanel::onEraseBackground)
@@ -31,3 +31,4 @@ void ControlPanel::onPaint(wxPaintEvent &event)
 {
     wxPaintDC dc(this);
 }
+

@@ -5,8 +5,8 @@
 
 class ControlPanel : public wxPanel
 {
-    DECLARE_CLASS(ControlPanel);
-    DECLARE_EVENT_TABLE();
+    DECLARE_CLASS(ControlPanel)
+    DECLARE_EVENT_TABLE()
 private:
     wxPanel *panel;
     wxButton *button1;

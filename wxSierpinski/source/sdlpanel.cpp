@@ -3,7 +3,7 @@
 
 #include "sdlpanel.h"
 
-IMPLEMENT_CLASS(SDLPanel, wxPanel);
+IMPLEMENT_CLASS(SDLPanel, wxPanel)
 BEGIN_EVENT_TABLE(SDLPanel, wxPanel)
     EVT_PAINT(SDLPanel::onPaint)
     EVT_ERASE_BACKGROUND(SDLPanel::onEraseBackground)

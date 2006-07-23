@@ -11,7 +11,7 @@ enum {
     ID_SDL_PANEL,
     ID_CONTROL_PANEL,
     IDM_FILE_EXIT,
-    IDM_HELP_ABOUT,
+    IDM_HELP_ABOUT
 };
 
 #endif /* WINIDS_H */

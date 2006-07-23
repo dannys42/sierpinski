@@ -8,8 +8,8 @@
 
 class SDLPanel : public wxPanel 
 {
-    DECLARE_CLASS(SDLPanel);
-    DECLARE_EVENT_TABLE();
+    DECLARE_CLASS(SDLPanel)
+    DECLARE_EVENT_TABLE()
 private:
     SDL_Surface *screen;
     SDLThread *thread;

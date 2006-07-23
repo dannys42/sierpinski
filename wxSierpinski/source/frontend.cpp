@@ -7,8 +7,8 @@
 #include "frontend.h"
 #include "mainframe.h"
 
-IMPLEMENT_CLASS(MainApp, wxApp);
-IMPLEMENT_APP(MainApp);
+IMPLEMENT_CLASS(MainApp, wxApp)
+IMPLEMENT_APP(MainApp)
 
 bool MainApp::OnInit(void)
 {

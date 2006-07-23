@@ -5,7 +5,8 @@ amenv = AppEnvironment()
 Export('amenv')
 
 APP_DIRS = [
-    'libsierp'
+    'libsierp',
+    'wxSierpinski',
 ]
 
 amenv.BuildDir('#/build/<ENVIRONMENT>/<DIR>', APP_DIRS, duplicate=0)

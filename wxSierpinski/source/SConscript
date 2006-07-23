@@ -1,0 +1,49 @@
+import string
+import os
+
+MYARCH = os.uname()[4]
+
+COMMON_SOURCES = [ ]
+TARGETS = {
+    'wxSierpinski' : [
+        'control_panel.cpp',
+        'frontend.cpp',
+        'mainframe.cpp',
+        'sdlpanel.cpp',
+        'sdlthread.cpp',
+    ]
+}
+INCLUDE_DIRS = [
+    '#/libsierp/include',
+]
+LIBS = [
+    'sierp',
+    'm',
+]
+LIB_DIRS = [
+    '../source',
+    '../../libsierp/source',
+]
+
+# You shouldn't need to modify below this line.
+
+Import('amenv')
+menv = amenv.Copy()
+
+#### Section for wxWidgets
+#menv.Append(CCFLAGS=['-DwxSIZE_T_IS_UINT'])
+menv.ParseConfig('wx-config --cflags --libs')
+#### 
+
+menv.Append(CPPPATH=INCLUDE_DIRS)
+menv.Append(LIBS=LIBS, LIBPATH=LIB_DIRS)
+
+for target in TARGETS.keys():
+    #
+    # Only perform build on host's architecture
+    #
+    if( string.find(menv.WORKING_BUILD_TYPE, MYARCH ) >= 0 ):
+        sources = TARGETS[target]
+        menv.Program(target, sources)
+        menv.Install(target)
+

@@ -7,8 +7,8 @@
 #include "control_panel.h"
 
 class MainFrame : public wxFrame {
-    DECLARE_CLASS(MainFrame);
-    DECLARE_EVENT_TABLE();
+    DECLARE_CLASS(MainFrame)
+    DECLARE_EVENT_TABLE()
 
 private:
     SDLPanel *sdlpanel;

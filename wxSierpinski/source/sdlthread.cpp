@@ -14,7 +14,7 @@ SDLThread::SDLThread(wxPanel *panel, SDL_Surface *screen) : wxThread()
     this->panel = panel;
     this->screen = screen;
 
-    this->sierp = sierp_new(3);
+    this->sierp = sierp_new();
     sierp_vertex_set(sierp, 5, 200);
 }
 
@@ -94,9 +94,12 @@ void SDLThread::update_scene(void)
     
     num = sierp_vertex_num(sierp);
     for(i=0; i<num; i++) {
+        int x, y;
         const SIERP_POINT *p;
         p = sierp_vertex_get(sierp, i);
-        draw_pixel(p->x + 300, p->y + 240, 0xffffff ^ tick);
+        x = (int)(p->x + 200);
+        y = (int)(p->y + 200);
+        draw_pixel(x, y, 0xffffff ^ tick);
     }
     // Unlock if needed
     if (SDL_MUSTLOCK(screen)) {

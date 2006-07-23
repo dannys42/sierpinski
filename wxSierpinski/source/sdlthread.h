@@ -10,7 +10,7 @@ class SDLThread : public wxThread
 {
 public:
     SDLThread(wxPanel *panel, SDL_Surface *screen);
-    SDLThread::~SDLThread();
+    ~SDLThread();
 
 private:
     SDL_Surface *screen;

@@ -1,7 +1,7 @@
 
 #include "mainframe.h"
 
-IMPLEMENT_CLASS(MainFrame, wxFrame);
+IMPLEMENT_CLASS(MainFrame, wxFrame)
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(IDM_FILE_EXIT, MainFrame::onFileExit)
