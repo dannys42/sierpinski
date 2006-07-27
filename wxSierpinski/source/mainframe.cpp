@@ -1,6 +1,8 @@
 
 #include "mainframe.h"
 
+#include "sierpicon.xpm"
+
 IMPLEMENT_CLASS(MainFrame, wxFrame)
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
@@ -11,9 +13,13 @@ END_EVENT_TABLE()
 
 MainFrame::MainFrame(void)
 {
-    Create(NULL, ID_FRAME, wxT("Frame Title"), wxDefaultPosition,
+    Create(NULL, ID_FRAME, wxT("wxSierpinski"), 
+        wxDefaultPosition,
         wxDefaultSize, 
         wxDEFAULT_FRAME_STYLE);
+
+    // Set the icon for this window
+    SetIcon(wxIcon(sierpicon_xpm));
 
     wxMenuBar *mb = new wxMenuBar;
 
@@ -82,7 +88,9 @@ void MainFrame::OnSize(wxSizeEvent &event)
 
 void MainFrame::sendIdleEvent(void)
 {
+    /*
     wxIdleEvent event;
     event.SetEventObject(glpanel);
     glpanel->AddPendingEvent(event);
+    */
 }

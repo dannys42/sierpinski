@@ -1,6 +1,9 @@
 #ifndef GLPANEL_H
 #define GLPANEL_H
 
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <wx/glcanvas.h>
 
 #include "win_common.h"
@@ -16,16 +19,23 @@ public:
         const wxSize &size = wxDefaultSize,
         long style = 0,
         const wxString &name = _T("GLCanvas"),
-        int *gl_attrib = NULL
+        int *glattributelist = NULL
         );
     ~GLPanel();
 
-    void OnWindowCreate(wxWindowCreateEvent &event);
-    void OnPaint(wxPaintEvent &event);
-    void OnSize(wxSizeEvent &event);
+    void OnWindowCreate(wxInitDialogEvent &evt);
+    void OnPaint(wxPaintEvent &evt);
+    void OnSize(wxSizeEvent &evt);
+    void OnEraseBackground(wxEraseEvent &evt);
+
+    void InitGL(void);
+    void Render(void);
+    void ResizeViewport(void);
 
 private:
+    bool hasInit;
     SceneThread *scene;
+
     void draw(void);
 };
 

@@ -1,7 +1,11 @@
 #ifndef SCENETHREAD_H
 #define SCENETHREAD_H
 
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>
+#include <GL/glu.h>
 #include <wx/glcanvas.h>
 
 #include "sierp/sierp.h"

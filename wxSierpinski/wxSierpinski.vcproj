@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib wxmsw26d_core.lib wxbase26d.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib odbc32.lib"
+				AdditionalDependencies="SDL.lib wxmsw26d_core.lib wxbase26d.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib winmm.lib wxmsw26d_gl.lib opengl32.lib comctl32.lib rpcrt4.lib wsock32.lib odbc32.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="c:\devel\libs\wxWidgets-2.6.3\lib\vc_lib;c:\devel\common\lib"
 				GenerateDebugInformation="true"
@@ -189,7 +189,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\source\glpanel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\source\mainframe.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\source\scenethread.cpp"
 				>
 			</File>
 			<File
@@ -215,7 +223,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\source\glpanel.h"
+				>
+			</File>
+			<File
 				RelativePath=".\source\mainframe.h"
+				>
+			</File>
+			<File
+				RelativePath=".\source\scenethread.h"
 				>
 			</File>
 			<File
@@ -236,6 +252,10 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+			<File
+				RelativePath=".\sierpicon.xpm"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
