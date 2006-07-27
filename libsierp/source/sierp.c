@@ -113,7 +113,7 @@ int sierp_update(SIERP *sierp, int steps)
     for( ; steps > 0; steps-- ) {
         /* pick a random vertex to go to */
         float rval;
-        rval = random();
+        rval = (float)rand();
         rval = rval / RAND_MAX * sierp_vertex_num(sierp);
 
         vertex_idx = (int)rval;
