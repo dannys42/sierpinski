@@ -7,7 +7,6 @@
 #include <wx/glcanvas.h>
 
 #include "win_common.h"
-#include "sdlthread.h"
 #include "scenethread.h"
 
 class GLPanel: public wxGLCanvas

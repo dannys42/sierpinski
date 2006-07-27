@@ -3,7 +3,6 @@
 
 #include "win_common.h"
 
-#include "sdlpanel.h"
 #include "glpanel.h"
 #include "control_panel.h"
 
@@ -12,7 +11,6 @@ class MainFrame : public wxFrame {
     DECLARE_EVENT_TABLE()
 
 private:
-    SDLPanel *sdlpanel;
     GLPanel *glpanel;
     ControlPanel *controlpanel;
     wxStatusBar *statusbar;
@@ -23,7 +21,6 @@ private:
 
 public:
     MainFrame();
-    void sendIdleEvent(void);
 };
 
 #endif /* MAINFRAME_H */

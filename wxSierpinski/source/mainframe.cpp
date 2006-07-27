@@ -85,12 +85,3 @@ void MainFrame::OnSize(wxSizeEvent &event)
     }
     event.Skip();   // keep processing event
 }
-
-void MainFrame::sendIdleEvent(void)
-{
-    /*
-    wxIdleEvent event;
-    event.SetEventObject(glpanel);
-    glpanel->AddPendingEvent(event);
-    */
-}

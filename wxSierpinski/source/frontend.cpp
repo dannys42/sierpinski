@@ -29,14 +29,6 @@ int MainApp::OnRun(void)
         
         return -1;
     }
-    
-#ifndef __WXMSW__ // don't do this if using wxWidgets on MS Windows
-    // Setup video mode, but don't create a window
-    SDL_SetVideoMode(0, 0, 0, SDL_SWSURFACE);
-#endif
-
-    // generate an initial idle event to start things
-    frame->sendIdleEvent();
 
     // start the main loop
     return wxApp::OnRun();
