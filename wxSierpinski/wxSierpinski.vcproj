@@ -200,14 +200,6 @@
 				RelativePath=".\source\scenethread.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\source\sdlpanel.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\source\sdlthread.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -232,14 +224,6 @@
 			</File>
 			<File
 				RelativePath=".\source\scenethread.h"
-				>
-			</File>
-			<File
-				RelativePath=".\source\sdlpanel.h"
-				>
-			</File>
-			<File
-				RelativePath=".\source\sdlthread.h"
 				>
 			</File>
 			<File
