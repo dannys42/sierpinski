@@ -85,7 +85,11 @@ def AppEnvironment(menv = None):
     common['ENV']['PATH'] = default_path
     common['CC'] = 'gcc'
     common['LINK'] = 'g++'
-    common['CCFLAGS'] = [ '-Wall', '-pedantic' ] + global_CCFLAGS
+    common['CCFLAGS'] = [
+        '-Wall',
+        '-pedantic',
+        '-Wno-long-long',  # to surpress g++ bug
+        ] + global_CCFLAGS
     common['CPPFLAGS'] = [ ]
     common['LINKFLAGS'] = [ ]
     common['LIBPATH'] = [ ]

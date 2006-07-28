@@ -10,9 +10,7 @@ TARGETS = {
         'frontend.cpp',
         'glpanel.cpp',
         'mainframe.cpp',
-        'sdlpanel.cpp',
         'scenethread.cpp',
-        'sdlthread.cpp',
     ]
 }
 INCLUDE_DIRS = [
@@ -44,9 +42,16 @@ menv.Append(LIBS=LIBS, LIBPATH=LIB_DIRS)
 
 for target in TARGETS.keys():
     #
-    # Only perform build on host's architecture
+    # If we're building on an x86_64 architecture, then only build
+    # the application for that architecture.  (i.e. we can't
+    # cross-build to i386 without those development libraries
     #
-    if( string.find(menv.WORKING_BUILD_TYPE, MYARCH ) >= 0 ):
+    build = 1
+    if MYARCH == 'x86_64':
+        if( string.find(menv.WORKING_BUILD_TYPE, MYARCH ) < 0 ):
+            build = 0
+
+    if build:
         sources = TARGETS[target]
         menv.Program(target, sources)
         menv.Install(target)
