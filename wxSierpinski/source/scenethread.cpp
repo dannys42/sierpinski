@@ -10,6 +10,8 @@
 
 SceneThread::SceneThread(wxGLCanvas *glcanvas) : wxThread()
 {
+    float mx, my;
+
     screen_last_time = 0;
     scene_last_time = 0;
 
@@ -20,34 +22,31 @@ SceneThread::SceneThread(wxGLCanvas *glcanvas) : wxThread()
     this->sierp = sierp_new();
 
     glcanvas->GetSize(&this->width, &this->height);
-    this->radius = min(width, height) / 2;
+    this->radius = 100;
 
     sierp_vertex_set(sierp, 3, this->radius);
     sierp_points_size_set(sierp, 100000);
+
+    this->margin_x = 5;
+    this->margin_y = 5;
+
+    this->x_min = sierp_x_min(sierp);
+    this->x_max = sierp_x_max(sierp);
+    this->y_min = sierp_y_min(sierp);
+    this->y_max = sierp_y_max(sierp);
+
+    mx = (x_max - x_min) * margin_x / 100.0;
+    my = (y_max - y_min) * margin_y / 100.0;
+
+    this->x_min -= mx;
+    this->x_max += mx;
+    this->y_min -= my;
+    this->y_max += my;
 }
 
 SceneThread::~SceneThread()
 {
     sierp_delete(this->sierp);
-}
-
-void SceneThread::draw_pixel(int x, int y, wxUint32 color)
-{
-}
-
-void SceneThread::draw_point(const SIERP_POINT *point, wxUint32 color)
-{
-    double x, y;
-    x = point->x;
-    y = point->y;
-
-    y = -y;   // flip vertically
-
-    // now center it
-    x += this->width/2;
-    y += this->height/2;
-
-    draw_pixel((int)x, (int)y, color);
 }
 
 void *SceneThread::Entry(void)
@@ -77,60 +76,81 @@ void SceneThread::update_screen(void)
 
 void SceneThread::update_scene(void)
 {
-    int i;
-    int num;
-    const SIERP_POINT_LIST *points;
-
     sierp_update(sierp, 100);
-    points = sierp_points(sierp);
-    num = sierp_point_list_size_get(points);
-    for(i=0; i<num; i++) {
-        const SIERP_POINT *p;
-        p = sierp_point_list_get_index(points, i);
-        draw_point(p, 0xcccccc);
-    }
-    
-    
-    /* Draw Vertices */
-    num = sierp_vertex_num(sierp);
-    for(i=0; i<num; i++) {
-        const SIERP_POINT *p;
-        p = sierp_vertex_get(sierp, i);
-        draw_point(p, 0x7f7fff);
-    }
 
     screen_dirty = true;
 }
 
 void SceneThread::render(void)
 {
-    int i, n;
-    double x, y;
-    const SIERP_POINT_LIST *points;
-
     glcanvas->SetCurrent();
 
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glPushMatrix();
-    gluOrtho2D(-radius, radius, -radius, radius);
+    gluOrtho2D(x_min, x_max, y_min, y_max);
     glMatrixMode(GL_MODELVIEW);
 
-    glColor3f(0.50, 0.50, 0.50);
-    glBegin( GL_TRIANGLE_STRIP );
-        glVertex2f(-100.0, -100.0);
-        glVertex2f(100.0, -100.0);
-        glVertex2f(0.0, 100.0);
-    glEnd();
-
-    glColor3f(1.0, 1.0, 1.0);
-    glBegin( GL_TRIANGLE_STRIP );
-        glVertex2f(-1.0, -1.0);
-        glVertex2f(1.0, -1.0);
-        glVertex2f(0.0, 1.0);
-    glEnd();
+    this->render_grid();
 
     /* draw points */
     glColor3f(0.0, 0.75, 0.0);
+    this->render_sierp_points();
+
+    /* draw vertices */
+    glColor3f(1.0, 1.0, 1.0);
+    this->render_sierp_vertices();
+
+    glPopMatrix();
+    glFlush();
+
+    glcanvas->SwapBuffers();
+}
+
+void SceneThread::render_grid(void)
+{
+    GLfloat i;
+    float grid_x = 10.0;    // number of divisions along x
+    float grid_y = 10.0;    // number of divisions along y
+    float grid_width;
+    float grid_height;
+    float center;
+
+    glColor3f(0.25, 0.25, 0.25);
+    glBegin( GL_LINES );
+
+    grid_width = (x_max - x_min) / grid_x;
+    grid_height = (y_max - y_min) / grid_y;
+
+    /* horizontal lines */
+    for(i=this->x_min; i<= this->x_max; i+= grid_width) {
+        glVertex2f(i, this->y_min);
+        glVertex2f(i, this->y_max);
+    }
+    /* vertical lines */
+    for(i=this->y_min; i<=this->y_max; i+=grid_height) {
+        glVertex2f(this->x_min, i);
+        glVertex2f(this->x_max, i);
+    }
+    glEnd();
+
+    glColor3f(0.50, 0.50, 0.50);
+    /* center lines */
+    glBegin( GL_LINES );
+        center = (this->x_max + this->x_min)/2;
+        glVertex2f(center, this->y_min);
+        glVertex2f(center, this->y_max);
+
+        center = (this->y_max + this->y_min)/2;
+        glVertex2f(this->x_min, center);
+        glVertex2f(this->x_max, center);
+    glEnd();
+}
+
+void SceneThread::render_sierp_points(void)
+{
+    int i, n;
+    const SIERP_POINT_LIST *points;
+
     glBegin( GL_POINTS );
     points = sierp_points(sierp);
     n = sierp_point_list_size_get(points);
@@ -140,23 +160,22 @@ void SceneThread::render(void)
         glVertex2f(p->x, p->y);
     }
     glEnd();
-#if 1
-    /* draw vertices */
-    glColor3f(1.0, 1.0, 1.0);
+}
+
+void SceneThread::render_sierp_vertices(void)
+{
+    int i, n;
+    const SIERP_POINT *p;
+    double x, y;
+
     glBegin( GL_POINTS );
     n = sierp_vertex_num(sierp);
     for(i=0; i<n; i++) {
-        const SIERP_POINT *p;
         p = sierp_vertex_get(sierp, i);
         x = p->x;
         y = p->y;
         glVertex2f(x, y);
     }
     glEnd();
-#endif
-
-    glPopMatrix();
-    glFlush();
-
-    glcanvas->SwapBuffers();
 }
+

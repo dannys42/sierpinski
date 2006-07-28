@@ -12,6 +12,14 @@
 #include "sierp/sierp_point.h"
 #include "sierp/sierp_point_list.h"
 
+#ifndef min
+#define min(a,b)    ((a)<(b) ? (a) : (b))
+#endif
+
+#ifndef max
+#define max(a,b)    ((a)>(b) ? (a) : (b))
+#endif
+
 #define SIERP_DEFAULT_VERTICES      3
 #define SIERP_DEFAULT_DIVISOR       2
 #define SIERP_DEFAULT_RADIUS        100
@@ -25,6 +33,10 @@ struct SIERP {
     int flags;
     int radius;
     int iter_per_update;
+    double x_min;
+    double x_max;
+    double y_min;
+    double y_max;
 };
 
 static double sierp_radian_align_bottom(SIERP *sierp, int num_vertices);
@@ -43,6 +55,10 @@ SIERP *sierp_new(void)
     sierp->iter_per_update = 100;
     sierp->flags = 0;
     sierp->divisor = SIERP_DEFAULT_DIVISOR;
+    sierp->x_min = 0;
+    sierp->x_max = 0;
+    sierp->y_min = 0;
+    sierp->y_max = 0;
     sierp_flag_set(sierp, SIERP_FLAG_ALIGN_BOTTOM);
 
     /* Default vertex type */
@@ -96,6 +112,18 @@ SIERP *sierp_vertex_set(SIERP *sierp, int num_vertices, int radius)
         p.y = radius * sin(radian);
         p.iter = 0;
         sierp_point_list_push_point(sierp->vertex, &p);
+
+        if( i == 0 ) {
+            sierp->x_min = p.x;
+            sierp->x_max = p.x;
+            sierp->y_min = p.y;
+            sierp->y_max = p.y;
+        } else {
+            sierp->x_min = min(sierp->x_min, p.x);
+            sierp->x_max = max(sierp->x_max, p.x);
+            sierp->y_min = min(sierp->y_min, p.y);
+            sierp->y_max = max(sierp->y_max, p.y);
+        }
     }
     sierp->radius = radius;
 
@@ -182,6 +210,26 @@ int sierp_flag_clear(SIERP *sierp, int flags)
 int sierp_flag_isset(SIERP *sierp, int flags)
 {
     return( sierp->flags & flags );
+}
+
+double sierp_x_min(SIERP *sierp)
+{
+    return( sierp->x_min );
+}
+
+double sierp_x_max(SIERP *sierp)
+{
+    return( sierp->x_max );
+}
+
+double sierp_y_min(SIERP *sierp)
+{
+    return( sierp->y_min );
+}
+
+double sierp_y_max(SIERP *sierp)
+{
+    return( sierp->y_max );
 }
 
 /*
