@@ -21,21 +21,21 @@ MainFrame::MainFrame(void)
     // Set the icon for this window
     SetIcon(wxIcon(sierpicon_xpm));
 
-    wxMenuBar *mb = new wxMenuBar;
+    wxMenuBar *mbar = new wxMenuBar;
 
     // Create the file menu
     wxMenu *fileMenu = new wxMenu;
     fileMenu->Append(IDM_FILE_EXIT, wxT("E&xit"));
     
-    mb->Append(fileMenu, wxT("&File"));
+    mbar->Append(fileMenu, wxT("&File"));
 
     // Create the help menu
     wxMenu *helpMenu = new wxMenu;
     helpMenu->Append(IDM_HELP_ABOUT, wxT("About"));
 
-    mb->Append(helpMenu, wxT("&Help"));
+    mbar->Append(helpMenu, wxT("&Help"));
 
-    SetMenuBar(mb); // assign the menubar
+    SetMenuBar(mbar); // assign the menubar
 
     // Create the StatusBar
     statusbar = CreateStatusBar(1, 0, wxID_ANY);;
@@ -68,7 +68,22 @@ void MainFrame::onFileExit(wxCommandEvent &)
 void MainFrame::onHelpAbout(wxCommandEvent &)
 {
     wxMessageBox(
-        wxT("wxSierpinski (c)2006 Danny Sung"),
+        wxT(
+            "wxSierpinski\n"
+            "(c)2006 Danny Sung\n"
+            "\n"
+            "A simple GUI to experiment with\n"
+            "Sierpinski's Triangle\n"
+            "\n"
+            "Official website:\n"
+            "    http://sierpinski.sourceforge.net/\n"
+            "\n"
+            "This program is released under the GNU GPL.\n"
+            "\n"
+            "Thanks to:\n"
+            " Matthew Wessner - for introducing me to\n"
+            "     higher level Sierpinski's shapes\n"
+            ),
         wxT("About wxSierpinski"),
         wxOK | wxICON_INFORMATION);
 }
