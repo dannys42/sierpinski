@@ -1,3 +1,8 @@
+/**
+  * @defgroup SIERP SIERP
+  * C-style class library for generating 2D Sierpinski polygons
+  * @{
+  */
 #define _USE_MATH_DEFINES
 
 #include <stdio.h>
@@ -25,10 +30,13 @@
 #define SIERP_DEFAULT_RADIUS        100
 #define SIERP_DEFAULT_POINT_SIZE    1000
 
+/** SIERP object handle
+  *
+  */
 struct SIERP {
-    SIERP_POINT_LIST *vertex;
-    SIERP_POINT_LIST *points;
-    SIERP_POINT point_last;
+    SIERP_POINT_LIST *vertex;   /**< List of vertices */
+    SIERP_POINT_LIST *points;   /**< List of fill points */
+    SIERP_POINT point_last;     /**< Last point drawn */
     double divisor;
     int flags;
     int radius;
@@ -41,6 +49,12 @@ struct SIERP {
 
 static double sierp_radian_align_bottom(SIERP *sierp, int num_vertices);
 
+/**
+  * Create a new SIERP object.
+  * 
+  * @return (SIERP *) to new object
+  * @retval NULL if insufficient memory
+  */
 SIERP *sierp_new(void)
 {
     SIERP *sierp;
@@ -71,6 +85,12 @@ SIERP *sierp_new(void)
     return sierp;
 }
 
+/**
+  * Destroy SIERP handle
+  *
+  * @param sierp pointer to object
+  * @retval NULL
+  */
 SIERP *sierp_delete(SIERP *sierp)
 {
     if( sierp == NULL )
@@ -88,6 +108,20 @@ SIERP *sierp_delete(SIERP *sierp)
     return NULL;
 }
 
+/**
+  * Set the number of vertices and size of the Sierpinski polygon.
+  *
+  * This function uses the circle of a given radius and creates a new
+  * equilateral polygon with the specified number of vertices.
+  * 
+  * @note All accumulated fill points will be destroyed
+  * 
+  * @param sierp handle to SIERP object
+  * @param num_vertices number of vertices.  This must be > 0
+  * @param radius the size of the circle along whose path the shape is
+  *             created
+  * @retval NULL
+  */
 SIERP *sierp_vertex_set(SIERP *sierp, int num_vertices, int radius)
 {
     int i;
@@ -132,6 +166,13 @@ SIERP *sierp_vertex_set(SIERP *sierp, int num_vertices, int radius)
     return NULL;
 }
 
+/**
+  * Calculate the next batch of fill points.
+  *
+  * @param sierp SIERP handle
+  * @param steps number of points to calculate this iteration
+  * @retval 0
+  */
 int sierp_update(SIERP *sierp, int steps)
 {
     int vertex_idx;
@@ -159,22 +200,50 @@ int sierp_update(SIERP *sierp, int steps)
     return(0);
 }
 
+/**
+  * Get the fill points for the current polygon.
+  *
+  * @param sierp handle to SIERP object
+  * @return pointer to SIERP_POINT_LIST containing all fill points
+  */
 const SIERP_POINT_LIST *sierp_points(SIERP *sierp)
 {
     return(sierp->points);
 }
 
+/**
+  * Set the number of fill points.
+  *
+  * @param sierp handle to SIERP object
+  * @param size maximum number of fill points
+  * @retval 0
+  */
 int sierp_points_size_set(SIERP *sierp, int size)
 {
     sierp_point_list_size_set(sierp->points, size);
     return(0);
 }
 
+/**
+  * Get the number of vertices
+  *
+  * @param sierp handle to SIERP object
+  * @return number of vertices in current polygon
+  */
 int sierp_vertex_num(SIERP *sierp)
 {
     return sierp_point_list_size_get(sierp->vertex);
 }
 
+/**
+  * Set the divisor used in point generation
+  * 
+  * @note All values except 0 are allowed.
+  * 
+  * @param sierp handle to SIERP object
+  * @param divisor divisor to use in calculations
+  * @return new divisor value
+  */
 double sierp_divisor_set(SIERP *sierp, double divisor)
 {
     if( divisor == 0 )
@@ -183,22 +252,52 @@ double sierp_divisor_set(SIERP *sierp, double divisor)
     return(sierp->divisor);
 }
 
+/**
+  * Retrieve the current divisor
+  *
+  * @param sierp handle to SIERP object
+  * @reutrn current divisor value
+  */
 double sierp_divisor_get(SIERP *sierp)
 {
     return(sierp->divisor);
 }
 
+/**
+  * Get a vertex coordinate
+  *
+  * @param sierp handle to SIERP object
+  * @param index index of vertex to get
+  * @return SIERP_POINT handle of vertex
+  */
 const SIERP_POINT *sierp_vertex_get(SIERP *sierp, int index)
 {
     return sierp_point_list_get_index(sierp->vertex, index);
 }
 
+/**
+  * Set any number of option flags
+  *
+  * Currently supported flags:
+  * SIERP_FLAG_ALIGN_BOTTOM - align bottom horizontally
+  *
+  * @param sierp handle to SIERP object
+  * @param flags OR'd flags to set
+  * @return new state of all flags
+  */
 int sierp_flag_set(SIERP *sierp, int flags)
 {
     sierp->flags |= flags;
     return(sierp->flags);
 }
 
+/**
+  * Clear option flags
+  *
+  * @param sierp handle to SIERP object
+  * @param flags OR'd flags to clear
+  * @return new state of all flags
+  */
 int sierp_flag_clear(SIERP *sierp, int flags)
 {
     sierp->flags |= flags;
@@ -207,26 +306,64 @@ int sierp_flag_clear(SIERP *sierp, int flags)
     return(sierp->flags);
 }
 
+/**
+  * Determine if the given flags are set
+  * @param sierp handle to SIERP object
+  * @param flags OR'd flags to test
+  * @return non-zero if all given flags are set
+  */
 int sierp_flag_isset(SIERP *sierp, int flags)
 {
-    return( sierp->flags & flags );
+    return( (sierp->flags & flags) == flags );
 }
 
+/**
+  * Get minimum x-coordinate based on vertices.
+  *
+  * This is useful for getting a bounding box around the polygon.
+  *
+  * @param sierp handle to SIERP object
+  * @return minimum x-coordinate
+  */
 double sierp_x_min(SIERP *sierp)
 {
     return( sierp->x_min );
 }
 
+/**
+  * Get minimum x-coordinate based on vertices.
+  *
+  * This is useful for getting a bounding box around the polygon.
+  *
+  * @param sierp handle to SIERP object
+  * @return minimum x-coordinate
+  */
 double sierp_x_max(SIERP *sierp)
 {
     return( sierp->x_max );
 }
 
+/**
+  * Get minimum y-coordinate based on vertices.
+  *
+  * This is useful for getting a bounding box around the polygon.
+  *
+  * @param sierp handle to SIERP object
+  * @return minimum x-coordinate
+  */
 double sierp_y_min(SIERP *sierp)
 {
     return( sierp->y_min );
 }
 
+/**
+  * Get maximum y-coordinate based on vertices.
+  *
+  * This is useful for getting a bounding box around the polygon.
+  *
+  * @param sierp handle to SIERP object
+  * @return maximum y-coordinate
+  */
 double sierp_y_max(SIERP *sierp)
 {
     return( sierp->y_max );
@@ -236,10 +373,20 @@ double sierp_y_max(SIERP *sierp)
  * Private Functions
  */
 
+/**
+  * Calculate radian offset to ensure the polygon has the bottom most
+  * segment horizontal.
+  *
+  * @param sierp handle to SIERP object
+  * @apram num_vertices number of vertices in polygon
+  * @return radian offset
+  */
 static double sierp_radian_align_bottom(SIERP *sierp, int num_vertices)
 {
     double radians;
     radians = 3*M_PI/2 - M_PI / num_vertices;
     return(radians);
 }
+
+/** @} */
 
