@@ -55,12 +55,12 @@ void *SceneThread::Entry(void)
         timeNow = SDL_GetTicks();
 
         if( (timeNow-screen_last_time) > screen_period /*&& screen_dirty*/ ) {
-            update_screen();
+            UpdateScreen();
             screen_last_time = timeNow;
             screen_dirty = false;
         }
         if( (timeNow-scene_last_time) > scene_period ) {
-            update_scene();
+            UpdateScene();
             scene_last_time = timeNow;
         }
         wxMilliSleep(100);
@@ -69,19 +69,19 @@ void *SceneThread::Entry(void)
     return NULL;
 }
 
-void SceneThread::update_screen(void)
+void SceneThread::UpdateScreen(void)
 {
     glcanvas->Refresh();
 }
 
-void SceneThread::update_scene(void)
+void SceneThread::UpdateScene(void)
 {
     sierp_update(sierp, 100);
 
     screen_dirty = true;
 }
 
-void SceneThread::render(void)
+void SceneThread::Render(void)
 {
     glcanvas->SetCurrent();
 
@@ -90,15 +90,15 @@ void SceneThread::render(void)
     gluOrtho2D(x_min, x_max, y_min, y_max);
     glMatrixMode(GL_MODELVIEW);
 
-    this->render_grid();
+    this->RenderGrid();
 
     /* draw points */
     glColor3f(0.0, 0.75, 0.0);
-    this->render_sierp_points();
+    this->RenderSierpPoints();
 
     /* draw vertices */
     glColor3f(1.0, 1.0, 1.0);
-    this->render_sierp_vertices();
+    this->RenderSierpVertices();
 
     glPopMatrix();
     glFlush();
@@ -106,7 +106,7 @@ void SceneThread::render(void)
     glcanvas->SwapBuffers();
 }
 
-void SceneThread::render_grid(void)
+void SceneThread::RenderGrid(void)
 {
     GLfloat i;
     float grid_x = 10.0;    // number of divisions along x
@@ -136,17 +136,17 @@ void SceneThread::render_grid(void)
     glColor3f(0.50, 0.50, 0.50);
     /* center lines */
     glBegin( GL_LINES );
-        center = (this->x_max + this->x_min)/2;
-        glVertex2f(center, this->y_min);
-        glVertex2f(center, this->y_max);
+    center = (this->x_max + this->x_min)/2;
+    glVertex2f(center, this->y_min);
+    glVertex2f(center, this->y_max);
 
-        center = (this->y_max + this->y_min)/2;
-        glVertex2f(this->x_min, center);
-        glVertex2f(this->x_max, center);
+    center = (this->y_max + this->y_min)/2;
+    glVertex2f(this->x_min, center);
+    glVertex2f(this->x_max, center);
     glEnd();
 }
 
-void SceneThread::render_sierp_points(void)
+void SceneThread::RenderSierpPoints(void)
 {
     int i, n;
     const SIERP_POINT_LIST *points;
@@ -162,7 +162,7 @@ void SceneThread::render_sierp_points(void)
     glEnd();
 }
 
-void SceneThread::render_sierp_vertices(void)
+void SceneThread::RenderSierpVertices(void)
 {
     int i, n;
     const SIERP_POINT *p;

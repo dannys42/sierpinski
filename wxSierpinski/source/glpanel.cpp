@@ -87,7 +87,7 @@ void GLPanel::Render(void)
         scene->Create();
         scene->Run();
     } else if( scene->IsAlive() ) {
-        this->scene->render();
+        this->scene->Render();
     }
 }
 

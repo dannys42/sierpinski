@@ -17,7 +17,7 @@ public:
     SceneThread(wxGLCanvas *glcanvas);
     ~SceneThread();
 
-    void render(void);
+    void Render(void);
 
 private:
     wxGLCanvas *glcanvas;
@@ -42,12 +42,12 @@ private:
     bool screen_dirty;      // only draw screen if scene is dirty
 
     void *Entry();  // thread entry-point
-    void update_screen();   // handle drawing of screen
-    void update_scene();    // handle update/calculation of scene
+    void UpdateScreen();   // handle drawing of screen
+    void UpdateScene();    // handle update/calculation of scene
 
-    void render_sierp_vertices(void);
-    void render_sierp_points(void);
-    void render_grid(void);
+    void RenderSierpVertices(void);
+    void RenderSierpPoints(void);
+    void RenderGrid(void);
     
 };
 
