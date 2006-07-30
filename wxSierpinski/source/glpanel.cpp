@@ -5,6 +5,8 @@
 
 BEGIN_EVENT_TABLE(GLPanel, wxGLCanvas)
     EVT_INIT_DIALOG(GLPanel::OnWindowCreate)
+    EVT_IDLE(GLPanel::OnIdle)
+    EVT_MOTION(GLPanel::OnMouseMove)
     EVT_ERASE_BACKGROUND(GLPanel::OnEraseBackground)
     EVT_SIZE(GLPanel::OnSize)
     EVT_PAINT(GLPanel::OnPaint)
@@ -25,6 +27,8 @@ GLPanel::GLPanel(wxWindow *parent, wxWindowID id,
 {
     this->hasInit = false;
     this->scene = NULL;
+    this->width = -1;
+    this->height = -1;
 }
 
 GLPanel::~GLPanel()
@@ -46,10 +50,25 @@ void GLPanel::OnPaint(wxPaintEvent &evt)
     this->Render();
 }
 
+void GLPanel::OnIdle(wxIdleEvent &evt)
+{
+}
+
+void GLPanel::OnMouseMove(wxMouseEvent &evt)
+{
+    if( this->scene == NULL )
+        return;
+
+    /* window coordinates are flipped from GL coordinates */
+    this->scene->CursorSet( evt.GetX(), height - evt.GetY() );
+}
+
 void GLPanel::OnSize(wxSizeEvent &evt)
 {
     // This is necessary on some platforms
     wxGLCanvas::OnSize(evt);
+
+    GetSize(&width, &height);
 
     if( hasInit ) {
         ResizeViewport();
@@ -89,6 +108,15 @@ void GLPanel::Render(void)
     } else if( scene->IsAlive() ) {
         this->scene->Render();
     }
+}
+
+float GLPanel::RenderPerSec(void)
+{
+    if( this->scene == NULL ) {
+        return(0.0f);
+    }
+
+    return(this->scene->render_per_sec);
 }
 
 void GLPanel::OnWindowCreate(wxInitDialogEvent &evt)

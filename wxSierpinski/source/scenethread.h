@@ -17,15 +17,20 @@ public:
     SceneThread(wxGLCanvas *glcanvas);
     ~SceneThread();
 
+    void CursorSet(int x, int y);
     void Render(void);
+
+    float render_per_sec;
+    float scene_per_sec;
 
 private:
     wxGLCanvas *glcanvas;
-    int timeNow;
+    int timeNow;            // [msec] clock value this thread period
     SIERP *sierp;
     int radius;
     int width;
     int height;
+    GLfloat cursor_x, cursor_y;
 
     GLfloat x_min;
     GLfloat x_max;
@@ -48,7 +53,12 @@ private:
     void RenderSierpVertices(void);
     void RenderSierpPoints(void);
     void RenderGrid(void);
+    void RenderCursor(void);
     
+    long render_count_new;
+    long render_count;
+    long render_time;
+
 };
 
 #endif /* SCENETHREAD_H */

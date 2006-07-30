@@ -14,10 +14,12 @@ private:
     GLPanel *glpanel;
     ControlPanel *controlpanel;
     wxStatusBar *statusbar;
+    float render_per_sec;
 
     void onFileExit(wxCommandEvent &event);
     void onHelpAbout(wxCommandEvent &event);
     void OnSize(wxSizeEvent &event);
+    void OnIdle(wxIdleEvent &event);
 
 public:
     MainFrame();

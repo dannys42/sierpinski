@@ -26,13 +26,17 @@ public:
     void OnPaint(wxPaintEvent &evt);
     void OnSize(wxSizeEvent &evt);
     void OnEraseBackground(wxEraseEvent &evt);
+    void OnIdle(wxIdleEvent &evt);
+    void OnMouseMove(wxMouseEvent &evt);
 
     void InitGL(void);
     void Render(void);
     void ResizeViewport(void);
+    float RenderPerSec();   // [sec] frames per second
 
 private:
     bool hasInit;
+    int width, height;
     SceneThread *scene;
 
     void draw(void);

@@ -1,3 +1,4 @@
+#include <stdio.h>
 
 #include "mainframe.h"
 
@@ -7,6 +8,7 @@ IMPLEMENT_CLASS(MainFrame, wxFrame)
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_SIZE(MainFrame::OnSize)
+    EVT_IDLE(MainFrame::OnIdle)
     EVT_MENU(IDM_FILE_EXIT, MainFrame::onFileExit)
     EVT_MENU(IDM_HELP_ABOUT, MainFrame::onHelpAbout)
 END_EVENT_TABLE()
@@ -58,6 +60,8 @@ MainFrame::MainFrame(void)
     SetSizer(sizer);
     sizer->Fit(this);
     sizer->SetSizeHints(this);
+
+    render_per_sec = 0.0f;
 }
 
 void MainFrame::onFileExit(wxCommandEvent &) 
@@ -99,4 +103,17 @@ void MainFrame::OnSize(wxSizeEvent &event)
         sizer->RecalcSizes();
     }
     event.Skip();   // keep processing event
+}
+
+void MainFrame::OnIdle(wxIdleEvent &event)
+{
+    float newval;
+    wxString str;
+
+    newval = glpanel->RenderPerSec();
+    if( newval != render_per_sec ) {
+        render_per_sec = newval;
+        str.Printf(_("%0.2f fps"), render_per_sec);
+        statusbar->SetStatusText(str, 2);
+    }
 }

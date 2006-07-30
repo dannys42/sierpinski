@@ -8,6 +8,9 @@
 #define min(a,b)   ((a)<(b)?(a):(b))
 #endif
 
+#define UPDATE_PERIOD       1000    // [msec] time to update fps counters
+#define CURSOR_SIZE         5       // [px]
+
 SceneThread::SceneThread(wxGLCanvas *glcanvas) : wxThread()
 {
     float mx, my;
@@ -42,6 +45,13 @@ SceneThread::SceneThread(wxGLCanvas *glcanvas) : wxThread()
     this->x_max += mx;
     this->y_min -= my;
     this->y_max += my;
+
+    this->render_count_new = 0;
+    this->render_count = 0;
+    this->render_time = 0;
+
+    this->cursor_x = 0;
+    this->cursor_y = 0;
 }
 
 SceneThread::~SceneThread()
@@ -69,6 +79,12 @@ void *SceneThread::Entry(void)
     return NULL;
 }
 
+void SceneThread::CursorSet(int x, int y)
+{
+    cursor_x = x;
+    cursor_y = y;
+}
+
 void SceneThread::UpdateScreen(void)
 {
     glcanvas->Refresh();
@@ -83,6 +99,7 @@ void SceneThread::UpdateScene(void)
 
 void SceneThread::Render(void)
 {
+    float time_delta;
     glcanvas->SetCurrent();
 
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -100,10 +117,24 @@ void SceneThread::Render(void)
     glColor3f(1.0, 1.0, 1.0);
     this->RenderSierpVertices();
 
+    this->RenderCursor();
+
     glPopMatrix();
     glFlush();
 
     glcanvas->SwapBuffers();
+
+    /* Update render count */
+    render_count_new++;
+    time_delta = timeNow - render_time;
+    if( time_delta > UPDATE_PERIOD ) {
+        render_count = render_count_new;
+        render_time = timeNow;
+        render_count_new = 0;
+        if( time_delta > 0 ) {
+            render_per_sec = (float)render_count / time_delta * 1000.0f;
+        }
+    }
 }
 
 void SceneThread::RenderGrid(void)
@@ -179,3 +210,65 @@ void SceneThread::RenderSierpVertices(void)
     glEnd();
 }
 
+void SceneThread::RenderCursor(void)
+{
+    GLdouble modelMatrix[16];
+    GLdouble projMatrix[16];
+    int viewport[4];
+    GLdouble x, y, z;
+    GLdouble xw, yw, zw;
+
+    glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
+    glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    gluUnProject(
+        cursor_x,
+        cursor_y,
+        0,
+        modelMatrix,
+        projMatrix,
+        viewport,
+        &x, &y, &z
+    );
+
+    /* Figure out size of cursor box */
+    gluUnProject(
+        cursor_x-CURSOR_SIZE,
+        cursor_y-CURSOR_SIZE,
+        0,
+        modelMatrix,
+        projMatrix,
+        viewport,
+        &xw, &yw, &zw
+    );
+    xw = fabs(xw-x);
+    yw = fabs(yw-y);
+    zw = fabs(zw-z);
+
+    /* Cursor color */
+    glColor4f(1.0, 1.0, 1.0, 0.5);
+    /* Draw horizontal/veritcal lines */
+    glBegin(GL_LINES);
+    glVertex3f(x, this->y_min, z);
+    glVertex3f(x, y-yw, z);
+
+    glVertex3f(x, y+yw, z);
+    glVertex3f(x, this->y_max, z);
+
+    glVertex3f(this->x_min, y, z);
+    glVertex3f(x-xw, y, z);
+
+    glVertex3f(x+xw, y, z);
+    glVertex3f(this->x_max, y, z);
+    glEnd();
+
+    /* draw box around cursor point */
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glBegin(GL_QUADS);
+    glVertex2f(x-xw, y-yw);
+    glVertex2f(x+xw, y-yw);
+    glVertex2f(x+xw, y+yw);
+    glVertex2f(x-xw, y+yw);
+    glEnd();
+}
