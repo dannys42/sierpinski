@@ -15,6 +15,8 @@ class AppState
     public:
         bool scene_recenter;
 
+        int control_margin;
+
         AppState(void);
 };
 

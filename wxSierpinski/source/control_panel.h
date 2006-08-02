@@ -14,7 +14,7 @@ class ControlPanel : public wxPanel
 private:
     AppState *appstate;
     wxPanel *panel;
-    wxButton *button1;
+    wxButton *apply_button;
     wxSpinCtrl *vertexctrl;
     wxTextCtrl *divisorctrl;
 
@@ -31,7 +31,7 @@ public:
     void OnPaint(wxPaintEvent &event);
     void OnVertexUpdate(wxSpinEvent &event);
     void OnDivisorUpdate(wxCommandEvent &event);
-
+    void OnApply(wxCommandEvent &event);
 
 };
 

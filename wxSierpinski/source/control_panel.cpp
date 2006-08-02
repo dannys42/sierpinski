@@ -6,6 +6,7 @@ BEGIN_EVENT_TABLE(ControlPanel, wxPanel)
     //EVT_ERASE_BACKGROUND(SDLPanel::onEraseBackground)
     EVT_SPINCTRL(ID_CONTROL_VERTICES, ControlPanel::OnVertexUpdate)
     EVT_TEXT_ENTER(ID_CONTROL_DIVISOR, ControlPanel::OnDivisorUpdate)
+    EVT_BUTTON(ID_CONTROL_APPLY, ControlPanel::OnApply)
 END_EVENT_TABLE()
 
 ControlPanel::ControlPanel(wxWindow *parent, AppState *appstate, SIERP *sierp) :
@@ -25,23 +26,26 @@ ControlPanel::ControlPanel(wxWindow *parent, AppState *appstate, SIERP *sierp) :
     sizer = new wxStaticBoxSizer(wxVERTICAL, this, _T("Controls"));
 
     // Populate contents
-    button1 = new wxButton(this, wxID_ANY, _T("Button 1"));
-    sizer->Add(button1, 0, wxEXPAND | wxLEFT|wxRIGHT, 10);
+    apply_button = new wxButton(this, ID_CONTROL_APPLY, _T("Apply"));
+    sizer->Add(apply_button, 0, wxEXPAND | wxLEFT|wxRIGHT,
+        appstate->control_margin);
 
     // Control for number of vertices
-    vertexctrl = new wxSpinCtrl(this, ID_CONTROL_VERTICES, _T("10"));
+    vertexctrl = new wxSpinCtrl(this, ID_CONTROL_VERTICES, _T("3"));
     layout = AddLabeledControl(_T("Vertices"), vertexctrl);
-    sizer->Add(layout, 0, wxEXPAND | wxRIGHT|wxLEFT, 10 );
+    sizer->Add(layout, 0, wxEXPAND | wxRIGHT|wxLEFT,
+        appstate->control_margin );
 
     divisorctrl = new wxTextCtrl(this, 
         ID_CONTROL_DIVISOR,
-        _T("2.5"),
+        _T("2"),
         wxDefaultPosition,
         wxDefaultSize,
         wxTE_PROCESS_ENTER
         );
     layout = AddLabeledControl(_T("Divisor"), divisorctrl);
-    sizer->Add(layout, 0, wxEXPAND | wxRIGHT|wxLEFT, 10 );
+    sizer->Add(layout, 0, wxEXPAND | wxRIGHT|wxLEFT,
+        appstate->control_margin );
 
     SetSizer(sizer);
     sizer->Fit(this);
@@ -51,6 +55,15 @@ ControlPanel::ControlPanel(wxWindow *parent, AppState *appstate, SIERP *sierp) :
 void ControlPanel::OnPaint(wxPaintEvent &event)
 {
     wxPaintDC dc(this);
+}
+
+void ControlPanel::OnApply(wxCommandEvent &event)
+{
+    wxCommandEvent null_command;
+    wxSpinEvent null_spin;
+    
+    OnVertexUpdate(null_spin);
+    OnDivisorUpdate(null_command);
 }
 
 void ControlPanel::OnVertexUpdate(wxSpinEvent &event)
@@ -88,10 +101,8 @@ void ControlPanel::OnDivisorUpdate(wxCommandEvent &event)
 
     /* Update the control with the actual value (just in case) */
     val = sierp_divisor_get(sierp);
-    str.sprintf(_T("%f"), val);
+    str.sprintf(_T("%0.4f"), val);
     divisorctrl->SetValue(str);
-
-    printf("Divisor updated: %f", val);
 }
 
 wxBoxSizer *ControlPanel::AddLabeledControl(const wxChar *str, wxWindow *control)
