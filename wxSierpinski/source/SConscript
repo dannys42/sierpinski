@@ -6,6 +6,7 @@ MYARCH = os.uname()[4]
 COMMON_SOURCES = [ ]
 TARGETS = {
     'wxSierpinski' : [
+        'appstate.cpp',
         'control_panel.cpp',
         'frontend.cpp',
         'glpanel.cpp',

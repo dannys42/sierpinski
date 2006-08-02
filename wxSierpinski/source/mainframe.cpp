@@ -13,8 +13,10 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(IDM_HELP_ABOUT, MainFrame::onHelpAbout)
 END_EVENT_TABLE()
 
-MainFrame::MainFrame(void)
+MainFrame::MainFrame(AppState *appstate, SIERP *sierp)
 {
+    this->appstate = appstate;
+
     Create(NULL, ID_FRAME, wxT("wxSierpinski"), 
         wxDefaultPosition,
         wxDefaultSize, 
@@ -48,10 +50,10 @@ MainFrame::MainFrame(void)
 
     // Create the SDL panel
     /*sdlpanel = new SDLPanel(this);*/
-    glpanel = new GLPanel(this);
+    glpanel = new GLPanel(this, appstate, sierp);
     
     // Create the control panel
-    controlpanel = new ControlPanel(this);
+    controlpanel = new ControlPanel(this, appstate, sierp);
 
     // Create the Layout handler, and assign the panes
     wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);

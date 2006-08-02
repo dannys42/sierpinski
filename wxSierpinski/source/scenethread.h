@@ -14,16 +14,18 @@
 class SceneThread : public wxThread
 {
 public:
-    SceneThread(wxGLCanvas *glcanvas);
+    SceneThread(wxGLCanvas *glcanvas, AppState *appstate, SIERP *sierp);
     ~SceneThread();
 
     void CursorSet(int x, int y);
     void Render(void);
+    void Recenter(void);
 
     float render_per_sec;
     float scene_per_sec;
 
 private:
+    AppState *appstate;
     wxGLCanvas *glcanvas;
     int timeNow;            // [msec] clock value this thread period
     SIERP *sierp;

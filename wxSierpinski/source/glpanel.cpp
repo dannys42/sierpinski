@@ -4,7 +4,6 @@
 #include "glpanel.h"
 
 BEGIN_EVENT_TABLE(GLPanel, wxGLCanvas)
-    EVT_INIT_DIALOG(GLPanel::OnWindowCreate)
     EVT_IDLE(GLPanel::OnIdle)
     EVT_MOTION(GLPanel::OnMouseMove)
     EVT_ERASE_BACKGROUND(GLPanel::OnEraseBackground)
@@ -12,7 +11,10 @@ BEGIN_EVENT_TABLE(GLPanel, wxGLCanvas)
     EVT_PAINT(GLPanel::OnPaint)
 END_EVENT_TABLE()
 
-GLPanel::GLPanel(wxWindow *parent, wxWindowID id,
+GLPanel::GLPanel(wxWindow *parent,
+        AppState *appstate,
+        SIERP *sierp,
+        wxWindowID id,
         const wxPoint &pos,
         const wxSize &size,
         long style,
@@ -25,6 +27,8 @@ GLPanel::GLPanel(wxWindow *parent, wxWindowID id,
         glattributelist
         )
 {
+    this->appstate = appstate;
+    this->sierp = sierp;
     this->hasInit = false;
     this->scene = NULL;
     this->width = -1;
@@ -102,7 +106,7 @@ void GLPanel::Render(void)
     if( !hasInit )
         return;
     if( this->scene == NULL ) {
-        this->scene = new SceneThread(this);
+        this->scene = new SceneThread(this, appstate, sierp);
         scene->Create();
         scene->Run();
     } else if( scene->IsAlive() ) {
@@ -117,14 +121,6 @@ float GLPanel::RenderPerSec(void)
     }
 
     return(this->scene->render_per_sec);
-}
-
-void GLPanel::OnWindowCreate(wxInitDialogEvent &evt)
-{
-    this->scene = new SceneThread(this);
-    scene->Create();
-    scene->Run();
-    evt.Skip();   // continue processing event
 }
 
 void GLPanel::OnEraseBackground(wxEraseEvent &WXUNUSED(evt))

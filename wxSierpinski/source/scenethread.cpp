@@ -1,7 +1,6 @@
 #include <SDL/SDL.h>
 
-#include "sierp/sierp.h"
-
+#include "control_panel.h"
 #include "scenethread.h"
 
 #ifndef min
@@ -11,9 +10,9 @@
 #define UPDATE_PERIOD       1000    // [msec] time to update fps counters
 #define CURSOR_SIZE         5       // [px]
 
-SceneThread::SceneThread(wxGLCanvas *glcanvas) : wxThread()
+SceneThread::SceneThread(wxGLCanvas *glcanvas, AppState *appstate, SIERP *sierp) : wxThread()
 {
-    float mx, my;
+    this->appstate = appstate;
 
     screen_last_time = 0;
     scene_last_time = 0;
@@ -22,7 +21,7 @@ SceneThread::SceneThread(wxGLCanvas *glcanvas) : wxThread()
     scene_period = 10;
 
     this->glcanvas = glcanvas;
-    this->sierp = sierp_new();
+    this->sierp = sierp;
 
     glcanvas->GetSize(&this->width, &this->height);
     this->radius = 100;
@@ -33,18 +32,7 @@ SceneThread::SceneThread(wxGLCanvas *glcanvas) : wxThread()
     this->margin_x = 5;
     this->margin_y = 5;
 
-    this->x_min = sierp_x_min(sierp);
-    this->x_max = sierp_x_max(sierp);
-    this->y_min = sierp_y_min(sierp);
-    this->y_max = sierp_y_max(sierp);
-
-    mx = (x_max - x_min) * margin_x / 100.0;
-    my = (y_max - y_min) * margin_y / 100.0;
-
-    this->x_min -= mx;
-    this->x_max += mx;
-    this->y_min -= my;
-    this->y_max += my;
+    this->Recenter();
 
     this->render_count_new = 0;
     this->render_count = 0;
@@ -57,6 +45,23 @@ SceneThread::SceneThread(wxGLCanvas *glcanvas) : wxThread()
 SceneThread::~SceneThread()
 {
     sierp_delete(this->sierp);
+}
+
+void SceneThread::Recenter(void)
+{
+    float mx, my;
+    this->x_min = sierp_x_min(sierp);
+    this->x_max = sierp_x_max(sierp);
+    this->y_min = sierp_y_min(sierp);
+    this->y_max = sierp_y_max(sierp);
+
+    mx = (x_max - x_min) * margin_x / 100.0;
+    my = (y_max - y_min) * margin_y / 100.0;
+
+    this->x_min -= mx;
+    this->x_max += mx;
+    this->y_min -= my;
+    this->y_max += my;
 }
 
 void *SceneThread::Entry(void)
@@ -92,6 +97,10 @@ void SceneThread::UpdateScreen(void)
 
 void SceneThread::UpdateScene(void)
 {
+    if( appstate->scene_recenter ) {
+        Recenter();
+        appstate->scene_recenter = false;
+    }
     sierp_update(sierp, 100);
 
     screen_dirty = true;

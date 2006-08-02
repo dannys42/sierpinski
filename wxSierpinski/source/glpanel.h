@@ -13,7 +13,10 @@ class GLPanel: public wxGLCanvas
 {
     DECLARE_EVENT_TABLE()
 public:
-    GLPanel(wxWindow *parent, wxWindowID id=wxID_ANY,
+    GLPanel(wxWindow *parent, 
+        AppState *appstate,
+        SIERP *sierp,
+        wxWindowID id=wxID_ANY,
         const wxPoint &pos = wxDefaultPosition,
         const wxSize &size = wxDefaultSize,
         long style = 0,
@@ -38,6 +41,8 @@ private:
     bool hasInit;
     int width, height;
     SceneThread *scene;
+    AppState *appstate;
+    SIERP *sierp;
 
     void draw(void);
 };

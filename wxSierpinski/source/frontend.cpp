@@ -12,7 +12,10 @@ IMPLEMENT_APP(MainApp)
 
 bool MainApp::OnInit(void)
 {
-    frame = new MainFrame;
+    sierp = sierp_new();
+    appstate = new AppState();
+
+    frame = new MainFrame(appstate, sierp);
     frame->SetClientSize(640, 480);
     frame->Centre();
     frame->Show();
@@ -38,5 +41,7 @@ int MainApp::OnExit(void)
 {
     SDL_Quit(); // cleanup SDL
 
+    sierp_delete(sierp);
+    delete appstate;
     return wxApp::OnExit();
 }

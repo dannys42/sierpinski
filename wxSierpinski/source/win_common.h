@@ -6,10 +6,16 @@
 #include <wx/wx.h>
 #endif
 
+#include <sierp/sierp.h>
+
+#include "appstate.h"
+
 enum {
     ID_FRAME = 10000,
     ID_SDL_PANEL,
     ID_CONTROL_PANEL,
+    ID_CONTROL_VERTICES,
+    ID_CONTROL_DIVISOR,
     IDM_FILE_EXIT,
     IDM_HELP_ABOUT
 };

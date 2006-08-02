@@ -11,6 +11,7 @@ class MainFrame : public wxFrame {
     DECLARE_EVENT_TABLE()
 
 private:
+    AppState *appstate;
     GLPanel *glpanel;
     ControlPanel *controlpanel;
     wxStatusBar *statusbar;
@@ -22,7 +23,7 @@ private:
     void OnIdle(wxIdleEvent &event);
 
 public:
-    MainFrame();
+    MainFrame(AppState *appstate, SIERP *sierp);
 };
 
 #endif /* MAINFRAME_H */
