@@ -12,6 +12,7 @@ typedef struct SIERP_POINT_LIST SIERP_POINT_LIST;
 
 SIERP_POINT_LIST *sierp_point_list_new(void);
 SIERP_POINT_LIST *sierp_point_list_delete(SIERP_POINT_LIST *point_list);
+void sierp_point_list_clear(SIERP_POINT_LIST *point_list);
 int sierp_point_list_is_empty(const SIERP_POINT_LIST *point_list);
 int sierp_point_list_is_full(const SIERP_POINT_LIST *point_list);
 void sierp_point_list_size_set(SIERP_POINT_LIST *point_list, int newsize);

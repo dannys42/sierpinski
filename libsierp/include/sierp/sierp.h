@@ -9,6 +9,7 @@ extern "C" {
 #include "sierp/sierp_point_list.h"
 
 #define SIERP_FLAG_ALIGN_BOTTOM   (1<<0)
+#define SIERP_RADIUS_DEFAULT        100
 
 struct SIERP;
 typedef struct SIERP SIERP;
@@ -16,6 +17,7 @@ typedef struct SIERP SIERP;
 SIERP *sierp_new(void);
 SIERP *sierp_delete(SIERP *sierp);
 
+void sierp_clear(SIERP *sierp);
 double sierp_divisor_get(SIERP *sierp);
 double sierp_divisor_set(SIERP *sierp, double divisor);
 int sierp_flag_clear(SIERP *sierp, int flags);

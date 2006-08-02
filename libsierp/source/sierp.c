@@ -109,6 +109,22 @@ SIERP *sierp_delete(SIERP *sierp)
 }
 
 /**
+  * Clear all points currently accumulated.
+  *
+  * @note This does not actually free any memory.
+  *
+  * @param sierp handle to SIERP object
+  */
+void sierp_clear(SIERP *sierp)
+{
+    if( sierp == NULL )
+        return;
+    if( sierp->points == NULL )
+        return;
+    sierp_point_list_clear(sierp->points);
+}
+
+/**
   * Set the number of vertices and size of the Sierpinski polygon.
   *
   * This function uses the circle of a given radius and creates a new

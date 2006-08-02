@@ -36,6 +36,13 @@ SIERP_POINT_LIST *sierp_point_list_delete(SIERP_POINT_LIST *point_list)
     return NULL;
 }
 
+void sierp_point_list_clear(SIERP_POINT_LIST *point_list)
+{
+    if( point_list == NULL )
+        return NULL;
+    point_list->head = point_list ->tail;
+}
+
 int sierp_point_list_is_empty(const SIERP_POINT_LIST *point_list)
 {
     if( point_list->head == point_list->tail )
