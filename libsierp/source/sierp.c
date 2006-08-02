@@ -32,11 +32,17 @@
 
 /** SIERP object handle
   *
+  * Control points are the "actual" vertices used in the math
+  * calculations.
+  *
+  * The 'vertex' variable, however, holds the adjusted values for the
+  * points that coincide with the calculated data points.
   */
 struct SIERP {
     SIERP_POINT_LIST *vertex;   /**< List of vertices */
+    SIERP_POINT_LIST *control;  /**< List of control points */
     SIERP_POINT_LIST *points;   /**< List of fill points */
-    SIERP_POINT point_last;     /**< Last point drawn */
+    SIERP_POINT control_last;   /**< Last point drawn */
     double divisor;
     int flags;
     int radius;
@@ -47,7 +53,15 @@ struct SIERP {
     double y_max;
 };
 
+/*
+ * Private Function Prototypes
+ */ 
 static double sierp_radian_align_bottom(SIERP *sierp, int num_vertices);
+static void sierp_vertex_update(SIERP *sierp);
+
+/*
+ * Public Function definitions
+ */
 
 /**
   * Create a new SIERP object.
@@ -64,6 +78,7 @@ SIERP *sierp_new(void)
 
     /* Initialize values */
     sierp->vertex = NULL;
+    sierp->control = NULL;
     sierp->points = NULL;
     sierp->radius = 100;
     sierp->iter_per_update = 100;
@@ -95,6 +110,10 @@ SIERP *sierp_delete(SIERP *sierp)
 {
     if( sierp == NULL )
         return NULL;
+    if( sierp->control != NULL ) {
+        sierp_point_list_delete(sierp->control);
+        sierp->control = NULL;
+    }
     if( sierp->vertex != NULL ) {
         sierp_point_list_delete(sierp->vertex);
         sierp->vertex = NULL;
@@ -144,11 +163,11 @@ SIERP *sierp_vertex_set(SIERP *sierp, int num_vertices, int radius)
     SIERP_POINT p;
     double rotate = 0;
 
-    if( sierp->vertex != NULL ) {
-        sierp_point_list_delete(sierp->vertex);
+    if( sierp->control != NULL ) {
+        sierp_point_list_delete(sierp->control);
     }
-    sierp->vertex = sierp_point_list_new();
-    sierp_point_list_size_set(sierp->vertex, num_vertices);
+    sierp->control = sierp_point_list_new();
+    sierp_point_list_size_set(sierp->control, num_vertices);
 
     if( sierp_flag_isset(sierp, SIERP_FLAG_ALIGN_BOTTOM) ) {
         rotate = sierp_radian_align_bottom(sierp, num_vertices);
@@ -161,24 +180,15 @@ SIERP *sierp_vertex_set(SIERP *sierp, int num_vertices, int radius)
         p.x = radius * cos(radian);
         p.y = radius * sin(radian);
         p.iter = 0;
-        sierp_point_list_push_point(sierp->vertex, &p);
-
-        if( i == 0 ) {
-            sierp->x_min = p.x;
-            sierp->x_max = p.x;
-            sierp->y_min = p.y;
-            sierp->y_max = p.y;
-        } else {
-            sierp->x_min = min(sierp->x_min, p.x);
-            sierp->x_max = max(sierp->x_max, p.x);
-            sierp->y_min = min(sierp->y_min, p.y);
-            sierp->y_max = max(sierp->y_max, p.y);
-        }
+        sierp_point_list_push_point(sierp->control, &p);
     }
     sierp->radius = radius;
 
+    /* Now update the vertices */
+    sierp_vertex_update(sierp);
+
     /* Just pick an arbitrary vertex to start with */
-    sierp->point_last = p;
+    sierp->control_last = p;
     return NULL;
 }
 
@@ -202,16 +212,16 @@ int sierp_update(SIERP *sierp, int steps)
         rval = rval / RAND_MAX * sierp_vertex_num(sierp);
 
         vertex_idx = (int)rval;
-        vertex = sierp_vertex_get(sierp, vertex_idx);
+        vertex = sierp_control_get(sierp, vertex_idx);
 
-        point.x = sierp->point_last.x + vertex->x;
+        point.x = sierp->control_last.x + vertex->x;
         point.x /= sierp->divisor;
 
-        point.y = sierp->point_last.y + vertex->y;
+        point.y = sierp->control_last.y + vertex->y;
         point.y /= sierp->divisor;
 
         sierp_point_list_push_point(sierp->points, &point);
-        sierp->point_last = point;
+        sierp->control_last = point;
     }
     return(0);
 }
@@ -248,7 +258,7 @@ int sierp_points_size_set(SIERP *sierp, int size)
   */
 int sierp_vertex_num(SIERP *sierp)
 {
-    return sierp_point_list_size_get(sierp->vertex);
+    return sierp_point_list_size_get(sierp->control);
 }
 
 /**
@@ -265,6 +275,9 @@ double sierp_divisor_set(SIERP *sierp, double divisor)
     if( divisor == 0 )
         return sierp->divisor;
     sierp->divisor = divisor;
+
+    sierp_vertex_update(sierp);
+
     return(sierp->divisor);
 }
 
@@ -277,6 +290,18 @@ double sierp_divisor_set(SIERP *sierp, double divisor)
 double sierp_divisor_get(SIERP *sierp)
 {
     return(sierp->divisor);
+}
+
+/**
+  * Get a vertex coordinate
+  *
+  * @param sierp handle to SIERP object
+  * @param index index of vertex to get
+  * @return SIERP_POINT handle of vertex
+  */
+const SIERP_POINT *sierp_control_get(SIERP *sierp, int index)
+{
+    return sierp_point_list_get_index(sierp->control, index);
 }
 
 /**
@@ -404,5 +429,45 @@ static double sierp_radian_align_bottom(SIERP *sierp, int num_vertices)
     return(radians);
 }
 
-/** @} */
+static void sierp_vertex_update(SIERP *sierp)
+{
+    int i;
+    int num_vertices;
 
+    if( sierp == NULL )
+        return;
+
+    num_vertices = sierp_point_list_size_get(sierp->control);
+    if( sierp->vertex != NULL ) {
+        sierp_point_list_delete(sierp->vertex);
+    }
+    sierp->vertex = sierp_point_list_new();
+    sierp_point_list_size_set(sierp->vertex, num_vertices);
+    for(i=0; i<num_vertices; i++) {
+        const SIERP_POINT *point;
+        SIERP_POINT vertex;
+        point = sierp_point_list_get_index(sierp->control, i);
+        vertex.x = point->x;
+        vertex.y = point->y;
+        if( sierp->divisor > 2 ) {
+            vertex.x /= sierp->divisor - 1;
+            vertex.y /= sierp->divisor - 1;
+        }
+        sierp_point_list_push_point(sierp->vertex, &vertex);
+
+        if( i == 0 ) {
+            sierp->x_min = vertex.x;
+            sierp->x_max = vertex.x;
+            sierp->y_min = vertex.y;
+            sierp->y_max = vertex.y;
+        } else {
+            sierp->x_min = min(sierp->x_min, vertex.x);
+            sierp->x_max = max(sierp->x_max, vertex.x);
+            sierp->y_min = min(sierp->y_min, vertex.y);
+            sierp->y_max = max(sierp->y_max, vertex.y);
+        }
+    }
+}
+
+
+/** @} */

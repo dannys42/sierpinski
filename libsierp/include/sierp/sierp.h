@@ -28,6 +28,7 @@ int sierp_points_size_set(SIERP *sierp, int size);
 int sierp_radius_get(SIERP *sierp);
 int sierp_update(SIERP *sierp, int steps);
 SIERP *sierp_vertex_set(SIERP *sierp, int num_vertices, int radius);
+const SIERP_POINT *sierp_control_get(SIERP *sierp, int index);
 const SIERP_POINT *sierp_vertex_get(SIERP *sierp, int index);
 int sierp_vertex_num(SIERP *sierp);
 double sierp_x_min(SIERP *sierp);
