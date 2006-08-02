@@ -14,7 +14,6 @@ class ControlPanel : public wxPanel
 private:
     AppState *appstate;
     wxPanel *panel;
-    wxButton *apply_button;
     wxSpinCtrl *vertexctrl;
     wxTextCtrl *divisorctrl;
 
@@ -27,11 +26,12 @@ private:
 public:
     bool sceneRecenter;
 
-    ControlPanel(wxWindow *parent, AppState *appstate, SIERP *sierp);
+    ControlPanel(wxWindow *parent, AppState *appstate);
     void OnPaint(wxPaintEvent &event);
     void OnVertexUpdate(wxSpinEvent &event);
     void OnDivisorUpdate(wxCommandEvent &event);
     void OnApply(wxCommandEvent &event);
+    void OnOutline(wxCommandEvent &event);
 
 };
 

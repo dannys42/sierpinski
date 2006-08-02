@@ -13,7 +13,6 @@ END_EVENT_TABLE()
 
 GLPanel::GLPanel(wxWindow *parent,
         AppState *appstate,
-        SIERP *sierp,
         wxWindowID id,
         const wxPoint &pos,
         const wxSize &size,
@@ -28,7 +27,6 @@ GLPanel::GLPanel(wxWindow *parent,
         )
 {
     this->appstate = appstate;
-    this->sierp = sierp;
     this->hasInit = false;
     this->scene = NULL;
     this->width = -1;
@@ -64,7 +62,8 @@ void GLPanel::OnMouseMove(wxMouseEvent &evt)
         return;
 
     /* window coordinates are flipped from GL coordinates */
-    this->scene->CursorSet( evt.GetX(), height - evt.GetY() );
+    appstate->scene.cursor.win_x = evt.GetX();
+    appstate->scene.cursor.win_y = height - evt.GetY();
 }
 
 void GLPanel::OnSize(wxSizeEvent &evt)
@@ -106,21 +105,12 @@ void GLPanel::Render(void)
     if( !hasInit )
         return;
     if( this->scene == NULL ) {
-        this->scene = new SceneThread(this, appstate, sierp);
+        this->scene = new SceneThread(this, appstate);
         scene->Create();
         scene->Run();
     } else if( scene->IsAlive() ) {
         this->scene->Render();
     }
-}
-
-float GLPanel::RenderPerSec(void)
-{
-    if( this->scene == NULL ) {
-        return(0.0f);
-    }
-
-    return(this->scene->render_per_sec);
 }
 
 void GLPanel::OnEraseBackground(wxEraseEvent &WXUNUSED(evt))

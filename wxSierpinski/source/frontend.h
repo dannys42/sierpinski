@@ -15,7 +15,6 @@ class MainApp : public wxApp
 
 private:
     MainFrame *frame;
-    SIERP *sierp;
     AppState *appstate;
 
 public:

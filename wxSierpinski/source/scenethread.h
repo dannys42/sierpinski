@@ -8,27 +8,24 @@
 #include <GL/glu.h>
 #include <wx/glcanvas.h>
 
-#include "sierp/sierp.h"
 #include "win_common.h"
 
 class SceneThread : public wxThread
 {
 public:
-    SceneThread(wxGLCanvas *glcanvas, AppState *appstate, SIERP *sierp);
+    SceneThread(wxGLCanvas *glcanvas, AppState *appstate);
     ~SceneThread();
 
-    void CursorSet(int x, int y);
     void Render(void);
     void Recenter(void);
 
-    float render_per_sec;
     float scene_per_sec;
 
 private:
     AppState *appstate;
+    SIERP *sierp;
     wxGLCanvas *glcanvas;
     int timeNow;            // [msec] clock value this thread period
-    SIERP *sierp;
     int radius;
     int width;
     int height;
@@ -52,10 +49,12 @@ private:
     void UpdateScreen();   // handle drawing of screen
     void UpdateScene();    // handle update/calculation of scene
 
-    void RenderSierpVertices(void);
-    void RenderSierpPoints(void);
+    void RenderSierpVertices(void); // draw vertices as points
+    void RenderSierpOutline(void);  // draw vertices as polygon
+    void RenderSierpPoints(void);   // draw contents
     void RenderGrid(void);
     void RenderCursor(void);
+    void Vertices(void);            // loop through all vertices
     
     long render_count_new;
     long render_count;

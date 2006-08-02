@@ -13,7 +13,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(IDM_HELP_ABOUT, MainFrame::onHelpAbout)
 END_EVENT_TABLE()
 
-MainFrame::MainFrame(AppState *appstate, SIERP *sierp)
+MainFrame::MainFrame(AppState *appstate)
 {
     this->appstate = appstate;
 
@@ -50,10 +50,10 @@ MainFrame::MainFrame(AppState *appstate, SIERP *sierp)
 
     // Create the SDL panel
     /*sdlpanel = new SDLPanel(this);*/
-    glpanel = new GLPanel(this, appstate, sierp);
+    glpanel = new GLPanel(this, appstate);
     
     // Create the control panel
-    controlpanel = new ControlPanel(this, appstate, sierp);
+    controlpanel = new ControlPanel(this, appstate);
 
     // Create the Layout handler, and assign the panes
     wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -111,11 +111,22 @@ void MainFrame::OnIdle(wxIdleEvent &event)
 {
     float newval;
     wxString str;
+    double newx, newy;
 
-    newval = glpanel->RenderPerSec();
+    newval = appstate->scene.render_per_sec;
     if( newval != render_per_sec ) {
         render_per_sec = newval;
         str.Printf(_("%0.2f fps"), render_per_sec);
         statusbar->SetStatusText(str, 2);
     }
+
+    newx = appstate->scene.cursor.scene_x;
+    newy = appstate->scene.cursor.scene_y;
+    if( newx != cursor_x || newy != cursor_y ) {
+        cursor_x = newx;
+        cursor_y = newy;
+        str.Printf(_("x=%0.3f y=%0.3f"), cursor_x, cursor_y);
+        statusbar->SetStatusText(str, 0);
+    }
+
 }

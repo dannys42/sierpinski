@@ -10,9 +10,10 @@
 #define UPDATE_PERIOD       1000    // [msec] time to update fps counters
 #define CURSOR_SIZE         5       // [px]
 
-SceneThread::SceneThread(wxGLCanvas *glcanvas, AppState *appstate, SIERP *sierp) : wxThread()
+SceneThread::SceneThread(wxGLCanvas *glcanvas, AppState *appstate) : wxThread()
 {
     this->appstate = appstate;
+    this->sierp = appstate->sierp;
 
     screen_last_time = 0;
     scene_last_time = 0;
@@ -21,7 +22,6 @@ SceneThread::SceneThread(wxGLCanvas *glcanvas, AppState *appstate, SIERP *sierp)
     scene_period = 10;
 
     this->glcanvas = glcanvas;
-    this->sierp = sierp;
 
     glcanvas->GetSize(&this->width, &this->height);
     this->radius = 100;
@@ -84,12 +84,6 @@ void *SceneThread::Entry(void)
     return NULL;
 }
 
-void SceneThread::CursorSet(int x, int y)
-{
-    cursor_x = x;
-    cursor_y = y;
-}
-
 void SceneThread::UpdateScreen(void)
 {
     glcanvas->Refresh();
@@ -97,9 +91,9 @@ void SceneThread::UpdateScreen(void)
 
 void SceneThread::UpdateScene(void)
 {
-    if( appstate->scene_recenter ) {
+    if( appstate->scene.recenter ) {
         Recenter();
-        appstate->scene_recenter = false;
+        appstate->scene.recenter = false;
     }
     sierp_update(sierp, 100);
 
@@ -123,8 +117,15 @@ void SceneThread::Render(void)
     this->RenderSierpPoints();
 
     /* draw vertices */
-    glColor3f(1.0, 1.0, 1.0);
-    this->RenderSierpVertices();
+    if( appstate->scene.draw_vertex ) {
+        glColor3f(1.0, 1.0, 1.0);
+        this->RenderSierpVertices();
+    }
+
+    if( appstate->scene.draw_outline ) {
+        glColor3f(0.75, 0.75, 0.75);
+        this->RenderSierpOutline();
+    }
 
     this->RenderCursor();
 
@@ -141,7 +142,8 @@ void SceneThread::Render(void)
         render_time = timeNow;
         render_count_new = 0;
         if( time_delta > 0 ) {
-            render_per_sec = (float)render_count / time_delta * 1000.0f;
+            appstate->scene.render_per_sec =
+                (float)render_count / time_delta * 1000.0f;
         }
     }
 }
@@ -202,13 +204,12 @@ void SceneThread::RenderSierpPoints(void)
     glEnd();
 }
 
-void SceneThread::RenderSierpVertices(void)
+void SceneThread::Vertices(void)
 {
     int i, n;
     const SIERP_POINT *p;
     double x, y;
 
-    glBegin( GL_POINTS );
     n = sierp_vertex_num(sierp);
     for(i=0; i<n; i++) {
         p = sierp_vertex_get(sierp, i);
@@ -216,6 +217,20 @@ void SceneThread::RenderSierpVertices(void)
         y = p->y;
         glVertex2f(x, y);
     }
+}
+
+void SceneThread::RenderSierpVertices(void)
+{
+    glBegin( GL_POINTS );
+    Vertices();
+    glEnd();
+}
+
+void SceneThread::RenderSierpOutline(void)
+{
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glBegin( GL_POLYGON );
+    Vertices();
     glEnd();
 }
 
@@ -232,19 +247,21 @@ void SceneThread::RenderCursor(void)
     glGetIntegerv(GL_VIEWPORT, viewport);
 
     gluUnProject(
-        cursor_x,
-        cursor_y,
+        appstate->scene.cursor.win_x,
+        appstate->scene.cursor.win_y,
         0,
         modelMatrix,
         projMatrix,
         viewport,
         &x, &y, &z
     );
+    appstate->scene.cursor.scene_x = x;
+    appstate->scene.cursor.scene_y = y;
 
     /* Figure out size of cursor box */
     gluUnProject(
-        cursor_x-CURSOR_SIZE,
-        cursor_y-CURSOR_SIZE,
+        appstate->scene.cursor.win_x - CURSOR_SIZE,
+        appstate->scene.cursor.win_y - CURSOR_SIZE,
         0,
         modelMatrix,
         projMatrix,

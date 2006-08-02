@@ -15,15 +15,19 @@ private:
     GLPanel *glpanel;
     ControlPanel *controlpanel;
     wxStatusBar *statusbar;
-    float render_per_sec;
 
+    // "old" values to see if things need to be redrawn
+    float render_per_sec;
+    double cursor_x, cursor_y;
+
+    // Function prototypes
     void onFileExit(wxCommandEvent &event);
     void onHelpAbout(wxCommandEvent &event);
     void OnSize(wxSizeEvent &event);
     void OnIdle(wxIdleEvent &event);
 
 public:
-    MainFrame(AppState *appstate, SIERP *sierp);
+    MainFrame(AppState *appstate);
 };
 
 #endif /* MAINFRAME_H */

@@ -15,7 +15,6 @@ class GLPanel: public wxGLCanvas
 public:
     GLPanel(wxWindow *parent, 
         AppState *appstate,
-        SIERP *sierp,
         wxWindowID id=wxID_ANY,
         const wxPoint &pos = wxDefaultPosition,
         const wxSize &size = wxDefaultSize,
@@ -35,14 +34,12 @@ public:
     void InitGL(void);
     void Render(void);
     void ResizeViewport(void);
-    float RenderPerSec();   // [sec] frames per second
 
 private:
     bool hasInit;
     int width, height;
     SceneThread *scene;
     AppState *appstate;
-    SIERP *sierp;
 
     void draw(void);
 };
