@@ -15,62 +15,56 @@ def MakeStatic(env):
     env['LIBRARY_TYPE'] = 'static'
     return(env)
 
-def AppEnvironmentArch(menv=None, common=None, arch=None):
+def AppEnvironmentArch(menv=None, common=None, platform=None, arch=None):
     # Common Desktop definitions
-    desktop = common.Copy()
-    desktop.Append( CPPPATH=['/usr/include/libxml2'] )
+    current = common.Copy()
+    current.Append( CPPPATH=['/usr/include/libxml2'] )
 
     # Desktop Optimized
-    desktop_optimized = desktop.Copy()
-    desktop_optimized.Append(CCFLAGS='-O6')
+    current_optimized = current.Copy()
+    current_optimized.Append(CCFLAGS='-O6')
 
-    desktop_optimized_static = MakeStatic( desktop_optimized.Copy() )
-    desktop_optimized_shared = MakeShared( desktop_optimized.Copy() )
+    current_optimized_static = MakeStatic( current_optimized.Copy() )
+    current_optimized_shared = MakeShared( current_optimized.Copy() )
 
-    menv.AddEnvironment('desktop-'+arch+'-optimized-static', desktop_optimized_static)
-    menv.AddEnvironment('desktop-'+arch+'-optimized-shared', desktop_optimized_shared)
+    menv.AddEnvironment(platform+'-'+arch+'-optimized-static', current_optimized_static)
+    menv.AddEnvironment(platform+'-'+arch+'-optimized-shared', current_optimized_shared)
 
     # Debug build
-    desktop_debug = desktop.Copy()
-    desktop_debug.Append(CCFLAGS='-g')
+    current_debug = current.Copy()
+    current_debug.Append(CCFLAGS='-g')
 
-    desktop_debug_static = MakeStatic( desktop_debug.Copy() )
-    desktop_debug_shared = MakeShared( desktop_debug.Copy() )
+    current_debug_static = MakeStatic( current_debug.Copy() )
+    current_debug_shared = MakeShared( current_debug.Copy() )
 
-    menv.AddEnvironment('desktop-'+arch+'-debug-static', desktop_debug_static)
-    menv.AddEnvironment('desktop-'+arch+'-debug-shared', desktop_debug_shared)
+    menv.AddEnvironment(platform+'-'+arch+'-debug-static', current_debug_static)
+    menv.AddEnvironment(platform+'-'+arch+'-debug-shared', current_debug_shared)
 
     # Desktop DMALLOC
     # At least on Fedora Core 5, this is not available for 64-bit
-    if arch != 'x86_64':
-        desktop_dmalloc = desktop.Copy()
-        desktop_dmalloc.Replace(
-            CC = 'gcc32',
-            LINK = 'g++32',
-            )
-        desktop_dmalloc.Append(
-            CCFLAGS = [ '-g', '-DDMALLOC', '-DDMALLOC_FUNC_CHECK', '-m32', '-march=i386'],
-            LIBS = ['dmalloc'],
-            LINKFLAGS = [ '-m32' ],
-            )
+    current_dmalloc = current.Copy()
+    current_dmalloc.Append(
+        CCFLAGS = [ '-g', '-DDMALLOC', '-DDMALLOC_FUNC_CHECK' ],
+        LIBS = ['dmalloc'],
+        )
 
-        desktop_dmalloc_static = MakeStatic( desktop_dmalloc.Copy() )
-        desktop_dmalloc_shared = MakeShared( desktop_dmalloc.Copy() )
+    current_dmalloc_static = MakeStatic( current_dmalloc.Copy() )
+    current_dmalloc_shared = MakeShared( current_dmalloc.Copy() )
 
-        menv.AddEnvironment('desktop-'+arch+'-dmalloc-static', desktop_dmalloc_static);
-        menv.AddEnvironment('desktop-'+arch+'-dmalloc-shared', desktop_dmalloc_shared);
+    menv.AddEnvironment(platform+'-'+arch+'-dmalloc-static', current_dmalloc_static);
+    menv.AddEnvironment(platform+'-'+arch+'-dmalloc-shared', current_dmalloc_shared);
 
     # Desktop Profile
-    desktop_profile = desktop.Copy()
-    desktop_profile.Append(
+    current_profile = current.Copy()
+    current_profile.Append(
         CCFLAGS = [ '-g', '-pg' ],
         LINKFLAGS = [ '-pg' ]
         )
-    desktop_profile_static = MakeStatic( desktop_profile.Copy() )
-    desktop_profile_shared = MakeShared( desktop_profile.Copy() )
+    current_profile_static = MakeStatic( current_profile.Copy() )
+    current_profile_shared = MakeShared( current_profile.Copy() )
 
-    menv.AddEnvironment('desktop-'+arch+'-profile-static', desktop_profile_static)
-    menv.AddEnvironment('desktop-'+arch+'-profile-shared', desktop_profile_shared)
+    menv.AddEnvironment(platform+'-'+arch+'-profile-static', current_profile_static)
+    menv.AddEnvironment(platform+'-'+arch+'-profile-shared', current_profile_shared)
 
     return menv
 
@@ -94,18 +88,29 @@ def AppEnvironment(menv = None):
     common['LINKFLAGS'] = [ ]
     common['LIBPATH'] = [ ]
 
-    common32 = common.Copy()
-    if arch == 'x86_64':
-        # If we're runng on a 64-bit system, compile both 32-bit and
-        # 64-bit versions
-        common32.Replace(
-            CC='gcc32',
-            LINK='g++32',
-        )
-        AppEnvironmentArch(menv, common32, 'i386')
-        AppEnvironmentArch(menv, common, arch)
-    else:       # assume i386
-        AppEnvironmentArch(menv, common, 'i386')
+    # i386 build
+    common_i386 = CommonEnvironment_i386(common)
+    common_x86_64 = CommonEnvironment_Athlon64(common)
+
+    AppEnvironmentArch(menv, common_i386, 'linux', 'i386')
+    AppEnvironmentArch(menv, common_x86_64, 'linux', 'x86_64')
 
     return(menv)
+
+
+def CommonEnvironment_i386(env):
+    newenv = env.Copy()
+    newenv.Append(
+        CCFLAGS = [ '-m32', '-march=i386', '-mtune=i386' ],
+        LINKFLAGS = [ '-m32' ],
+        )
+    return newenv;
+
+def CommonEnvironment_Athlon64(env):
+    newenv = env.Copy()
+    newenv.Append(
+        CCFLAGS = [ '-m64', '-march=athlon64', '-mtune=athlon64' ],
+        LINKFLAGS = [ '-m64' ],
+        )
+    return newenv;
 
