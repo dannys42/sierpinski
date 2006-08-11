@@ -98,6 +98,9 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
+			UseOfMFC="0"
+			UseOfATL="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="0"
 			WholeProgramOptimization="1"
 			>
@@ -118,13 +121,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="c:\devel\libs\wxWidgets-2.6.3\include;c:\devel\libs\wxWidgets-2.6.3\lib\vc_lib\mswd;c:\devel\common\include"
+				AdditionalIncludeDirectories="&quot;c:\devel\libs\wxWidgets-2.6.3\include&quot;;&quot;c:\devel\libs\wxWidgets-2.6.3\lib\vc_lib\mswd&quot;;c:\devel\common\include;C:\projects\sierpinski\libsierp\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WXMSW__;__WXDEBUG__"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -137,10 +139,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib wxmsw26d_core.lib wxbase26d.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib odbc32.lib"
+				UseLibraryDependencyInputs="true"
+				AdditionalDependencies="SDL.lib wxmsw26_core.lib wxbase26.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib wxmsw26_gl.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib odbc32.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="c:\devel\libs\wxWidgets-2.6.3\lib\vc_lib;c:\devel\common\lib"
-				GenerateDebugInformation="true"
+				AdditionalLibraryDirectories="&quot;c:\devel\libs\wxWidgets-2.6.3\lib\vc_lib&quot;;c:\devel\common\lib"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -181,6 +183,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\source\appstate.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\source\control_panel.cpp"
 				>
 			</File>
@@ -206,6 +212,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\source\appstate.h"
+				>
+			</File>
 			<File
 				RelativePath=".\source\control_panel.h"
 				>
