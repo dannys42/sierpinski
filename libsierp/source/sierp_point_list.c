@@ -39,7 +39,7 @@ SIERP_POINT_LIST *sierp_point_list_delete(SIERP_POINT_LIST *point_list)
 void sierp_point_list_clear(SIERP_POINT_LIST *point_list)
 {
     if( point_list == NULL )
-        return NULL;
+        return;
     point_list->head = point_list ->tail;
 }
 

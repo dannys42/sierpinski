@@ -143,6 +143,7 @@
 				AdditionalDependencies="SDL.lib wxmsw26_core.lib wxbase26.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib wxmsw26_gl.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib odbc32.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;c:\devel\libs\wxWidgets-2.6.3\lib\vc_lib&quot;;c:\devel\common\lib"
+				IgnoreDefaultLibraryNames=""
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
