@@ -58,11 +58,12 @@ class SierpinskiView: UIView {
         }
         
         // Draw new point
-        gc.setFillColor(UIColor.white.cgColor)
         gc.setLineWidth(0)
+//        gc.setFillColor(UIColor.white.cgColor)
         for point in points {
             let p = point.coordinate
             let r = CGRect(x: p.x, y: p.y, width: 1, height: 1)
+            gc.setFillColor(point.color)
             gc.addRect(r)
             gc.fillPath()
         }

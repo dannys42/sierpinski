@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import RandomColorSwift
 
 struct Point {
     let coordinate: CGPoint
@@ -21,20 +22,19 @@ class SierpinskiCalculator: Operation {
     public private(set) var verticies: [CGPoint] = []
     private var pointColor: UIColor = .white
     
+    private var colors: [UIColor] = []
+    
     init(bounds: CGSize, maxPoints: Int) {
         self.bounds = bounds
         self.maxPoints = maxPoints
         
         super.init()
-        self.setupVertices()
     }
     
-//    public func getPoints() -> [Point] {
-//        let points = self.points
-//        return points
-//    }
-    
     override func main() {
+        self.setupVertices()
+        self.setupColors()
+        
         while !self.isCancelled {
             self.addPoint()
         }
@@ -42,6 +42,9 @@ class SierpinskiCalculator: Operation {
 }
 
 fileprivate extension SierpinskiCalculator {
+    func setupColors() {
+        self.colors = randomColors(count: 1000, hue: .random, luminosity: .light)
+    }
     func setupVertices() {
         var p: CGPoint
         var verticies: [CGPoint] = []
@@ -67,6 +70,13 @@ fileprivate extension SierpinskiCalculator {
         }
     }
     
+    var randomColor: UIColor {
+        get {
+            let n = arc4random_uniform( UInt32(self.colors.count) )
+            return self.colors[Int(n)]
+        }
+    }
+    
     func addPoint() {
         guard self.verticies.count > 0 else { sleep(1); return }
         
@@ -78,7 +88,11 @@ fileprivate extension SierpinskiCalculator {
         let newLocation = self.randomVertex
         let midPointLocation = lastLocation.midpoint(newLocation)
         
-        let newPoint = Point(coordinate: midPointLocation, color: self.pointColor.cgColor)
+//        let color = randomColor(hue: .random, luminosity: .light)
+//        let color = UIColor.white
+        let color = self.randomColor
+        let newPoint = Point(coordinate: midPointLocation,
+                             color: color.cgColor)
         
         self.points.append(newPoint)
     }

@@ -1,0 +1,16 @@
+PODS:
+  - RandomColorSwift (1.0.0)
+
+DEPENDENCIES:
+  - RandomColorSwift
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - RandomColorSwift
+
+SPEC CHECKSUMS:
+  RandomColorSwift: 9f85058b721665d52d239ca166a913e083506444
+
+PODFILE CHECKSUM: b4e7ae58b7ce073e17ae269aa85f03cde8340f6d
+
+COCOAPODS: 1.5.3

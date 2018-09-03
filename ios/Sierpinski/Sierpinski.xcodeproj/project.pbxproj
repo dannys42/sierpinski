@@ -16,6 +16,7 @@
 		14543733213D05D80062E89B /* SierpinskiCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14543732213D05D80062E89B /* SierpinskiCalculator.swift */; };
 		14543735213D08820062E89B /* CGPointExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14543734213D08820062E89B /* CGPointExtension.swift */; };
 		14543737213D0A9A0062E89B /* SierpinskiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14543736213D0A9A0062E89B /* SierpinskiView.swift */; };
+		F4D630DBD16BE47C38D3ACED /* Pods_Sierpinski.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8C62E57DB952AE2839A0A69 /* Pods_Sierpinski.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,9 @@
 		14543732213D05D80062E89B /* SierpinskiCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SierpinskiCalculator.swift; sourceTree = "<group>"; };
 		14543734213D08820062E89B /* CGPointExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGPointExtension.swift; sourceTree = "<group>"; };
 		14543736213D0A9A0062E89B /* SierpinskiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SierpinskiView.swift; sourceTree = "<group>"; };
+		6A7820A02E3CAC0A8FC05FC5 /* Pods-Sierpinski.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sierpinski.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sierpinski/Pods-Sierpinski.debug.xcconfig"; sourceTree = "<group>"; };
+		A8C62E57DB952AE2839A0A69 /* Pods_Sierpinski.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sierpinski.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B547D48C5FFE5CBC3E316953 /* Pods-Sierpinski.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sierpinski.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sierpinski/Pods-Sierpinski.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4D630DBD16BE47C38D3ACED /* Pods_Sierpinski.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,6 +53,8 @@
 			children = (
 				1454371D213C453F0062E89B /* Sierpinski */,
 				1454371C213C453F0062E89B /* Products */,
+				6CFF5B5226A2BFBF37EF9FB0 /* Pods */,
+				6CEE589B7266AEAA2F7AE97B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -76,6 +83,23 @@
 			path = Sierpinski;
 			sourceTree = "<group>";
 		};
+		6CEE589B7266AEAA2F7AE97B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A8C62E57DB952AE2839A0A69 /* Pods_Sierpinski.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6CFF5B5226A2BFBF37EF9FB0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6A7820A02E3CAC0A8FC05FC5 /* Pods-Sierpinski.debug.xcconfig */,
+				B547D48C5FFE5CBC3E316953 /* Pods-Sierpinski.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -83,9 +107,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1454372D213C45400062E89B /* Build configuration list for PBXNativeTarget "Sierpinski" */;
 			buildPhases = (
+				332D69150C91A4917BC61DD3 /* [CP] Check Pods Manifest.lock */,
 				14543717213C453F0062E89B /* Sources */,
 				14543718213C453F0062E89B /* Frameworks */,
 				14543719213C453F0062E89B /* Resources */,
+				F7F2449F961B4D52FD8A01B7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -141,6 +167,45 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		332D69150C91A4917BC61DD3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Sierpinski-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F7F2449F961B4D52FD8A01B7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Sierpinski/Pods-Sierpinski-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/RandomColorSwift/RandomColorSwift.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RandomColorSwift.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Sierpinski/Pods-Sierpinski-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		14543717213C453F0062E89B /* Sources */ = {
@@ -294,6 +359,7 @@
 		};
 		1454372E213C45400062E89B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6A7820A02E3CAC0A8FC05FC5 /* Pods-Sierpinski.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -312,6 +378,7 @@
 		};
 		1454372F213C45400062E89B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B547D48C5FFE5CBC3E316953 /* Pods-Sierpinski.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
