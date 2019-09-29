@@ -25,7 +25,12 @@ To generate the appropriate .com file, do this:
     debug < s.asm
 ```
 
-![wxWindws](images/wxSierp-linux-20060727-r47.png)
+# Screenshots
 
+
+### Java
 ![Java](images/triangle-med.png)
+
+### wxWindows
+![wxWindws](images/wxSierp-linux-20060727-r47.png)
 
